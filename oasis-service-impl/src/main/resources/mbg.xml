@@ -1,0 +1,18 @@
+<!DOCTYPE generatorConfiguration PUBLIC
+        "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+<!--    MyBatis3DynamicSql-->
+    <context id="OasisTables" targetRuntime="MyBatis3DynamicSql">
+        <jdbcConnection driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+                        connectionURL="jdbc:sqlserver://localhost;database=DB_9B1BAC_dbOasis;user=sa;password=Password123!" />
+
+        <javaModelGenerator targetPackage="com.jtmc.apps.oasis.domain" targetProject="src/main/java"/>
+
+        <javaClientGenerator targetPackage="com.jtmc.apps.oasis.infrastructure" targetProject="src/main/java"/>
+
+        <table tableName="Empresa" >
+            <property name="virtualKeyColumns" value="id"/>
+        </table>
+    </context>
+</generatorConfiguration>
