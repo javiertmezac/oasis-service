@@ -1,0 +1,22 @@
+FROM openjdk:8-jre-alpine
+
+MAINTAINER javiermeza.cazarez@gmail.com
+
+ARG JDBC_HOST
+ARG JDBC_PORT
+ARG JDBC_SCHEMA
+ARG JDBC_USER
+ARG JDBC_PASSWORD
+
+ENV JDBC.HOST=$JDBC_HOST
+ENV JDBC.PORT=$JDBC_PORT
+ENV JDBC.SCHEMA=$JDBC_SCHEMA
+ENV JDBC.USER=$JDBC_USER
+ENV JDBC.PASSWORD=$JDBC_PASSWORD
+
+COPY oasis-service-server/target/oasis-service.jar /app/server.jar
+
+EXPOSE 8080
+
+CMD ["-jar", "/app/server.jar"]
+ENTRYPOINT ["java"]
