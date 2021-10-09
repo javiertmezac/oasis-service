@@ -20,40 +20,19 @@ public class ClientAppImpl {
     @Inject
     private SqlSessionFactory sqlSessionFactory;
 
-    public List<ClientsResponse> selectAllRows() {
+    public List<Empresa> selectAllRows() {
         try(SqlSession session = sqlSessionFactory.openSession()) {
             EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            return mapper.select(SelectDSLCompleter.allRows());
 
-            Stream<ClientsResponse> clientsResponseStream = mapper.select(SelectDSLCompleter.allRows())
-                    .stream().map(c -> {
-                        ClientsResponse mappingClient = new ClientsResponse();
-                        mappingClient.setClientId(c.getId());
-                        mappingClient.setClientName(c.getNombre());
-                        mappingClient.setClientAddress(
-                                String.format("%s, %s", c.getColonia(), c.getCalle())
-                        );
-                        return mappingClient;
-                    }
-            );
-            return clientsResponseStream.collect(Collectors.toList());
+
         }
     }
 
-    public ClientsResponse selectOne(int clientId) {
+    public Optional<Empresa> selectOne(int clientId) {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
-            Optional<Empresa> empresa = mapper.selectByPrimaryKey(clientId);
-            if (!empresa.isPresent()){
-                throw new WebApplicationException("Empresa not Found", Response.Status.NOT_FOUND);
-            }
-
-            ClientsResponse response = new ClientsResponse();
-            response.setClientId(empresa.get().getId());
-            response.setClientName(empresa.get().getNombre());
-            response.setClientAddress(
-                    String.format("%s, %s", empresa.get().getColonia(), empresa.get().getCalle())
-            );
-            return response;
+            return mapper.selectByPrimaryKey(clientId);
         }
     }
 }
