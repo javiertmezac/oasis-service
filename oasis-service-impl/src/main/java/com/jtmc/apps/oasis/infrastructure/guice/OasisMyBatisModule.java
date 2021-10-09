@@ -17,7 +17,7 @@ public class OasisMyBatisModule extends MyBatisModule {
         myBatisProperties.setProperty("JDBC.host", System.getenv("JDBC_HOST"));
         myBatisProperties.setProperty("JDBC.port", "1433");
         myBatisProperties.setProperty("JDBC.schema", System.getenv("JDBC_SCHEMA"));
-        myBatisProperties.setProperty("JDBC.username", "sa");
+        myBatisProperties.setProperty("JDBC.username", System.getenv("JDBC_USER"));
         myBatisProperties.setProperty("JDBC.password", System.getenv("JDBC_PASSWORD"));
         myBatisProperties.setProperty("JDBC.autoCommit", "false");
 
