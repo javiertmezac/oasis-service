@@ -1,6 +1,7 @@
 package com.jtmc.apps.oasis.api.v1.clients;
 
 import com.google.inject.Inject;
+import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
 import com.jtmc.apps.oasis.application.clients.ClientAppImpl;
 import com.jtmc.apps.oasis.domain.Empresa;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@JWTRequired
 public class ClientsApiImpl implements ClientsApi {
 
     @Inject
