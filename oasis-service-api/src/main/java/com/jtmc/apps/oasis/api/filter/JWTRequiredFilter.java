@@ -43,12 +43,10 @@ public class JWTRequiredFilter implements ContainerRequestFilter {
             String jwsString = authHeader.substring(authPrefix.length()).trim();
 
             SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-            Jws<Claims> claimsJws = Jwts.parserBuilder()
+            Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(jwsString);
-            System.out.println(claimsJws.getBody().getSubject());
-            System.out.println("All good!");
         }  catch (SignatureException exception) {
             exception.printStackTrace();
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);

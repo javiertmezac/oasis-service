@@ -1,7 +1,5 @@
 package com.jtmc.apps.oasis.api.v1.clients;
 
-import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;

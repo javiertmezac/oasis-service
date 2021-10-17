@@ -14,5 +14,8 @@
         <table tableName="Empresa" >
             <property name="virtualKeyColumns" value="id"/>
         </table>
+        <table tableName="Users" >
+            <property name="virtualKeyColumns" value="id"/>
+        </table>
     </context>
 </generatorConfiguration>
