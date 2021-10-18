@@ -10,5 +10,4 @@ public interface HealthcheckApi {
     @GET
     @Path("/status")
     Response getStatus();
-
 }

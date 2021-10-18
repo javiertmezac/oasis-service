@@ -5,10 +5,14 @@ import com.google.common.collect.Sets;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.name.Names;
 import com.jtmc.apps.oasis.api.filter.CorsFilter;
+import com.jtmc.apps.oasis.api.filter.JWTRequiredFilter;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsApiImpl;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApi;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApiImpl;
+import com.jtmc.apps.oasis.api.v1.login.LoginApi;
+import com.jtmc.apps.oasis.api.v1.login.LoginApiImpl;
 import com.jtmc.apps.oasis.infrastructure.guice.OasisMyBatisModule;
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.eclipse.jetty.server.Server;
@@ -18,6 +22,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.mybatis.guice.datasource.helper.JdbcHelper;
 
+import java.util.Properties;
 import java.util.Set;
 
 public class Launcher {
@@ -25,6 +30,7 @@ public class Launcher {
     public static void main(String[] args) {
         startJettyServer();
     }
+
     private static class JettyLauncherModule extends AbstractModule {
 
         @Override
@@ -34,6 +40,12 @@ public class Launcher {
 
             bind(ClientsApiImpl.class);
             bind(HealthcheckApi.class).to(HealthcheckApiImpl.class);
+            bind(LoginApi.class).to(LoginApiImpl.class);
+
+
+            Properties myProperties = new Properties();
+            myProperties.setProperty("key", System.getenv("key"));
+            Names.bindProperties(binder(), myProperties);
         }
     }
 
@@ -47,10 +59,11 @@ public class Launcher {
         protected Set<Object> serviceInstances(Injector injector) {
             return Sets.newHashSet(
                     injector.getInstance(CorsFilter.class),
+                    injector.getInstance(JWTRequiredFilter.class),
                     injector.getInstance(JacksonJsonProvider.class),
                     injector.getInstance(ClientsApiImpl.class),
-                    injector.getInstance(HealthcheckApiImpl.class)
-
+                    injector.getInstance(HealthcheckApiImpl.class),
+                    injector.getInstance(LoginApiImpl.class)
             );
         }
     }
