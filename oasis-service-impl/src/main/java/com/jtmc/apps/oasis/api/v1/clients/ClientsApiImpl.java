@@ -25,13 +25,13 @@ public class ClientsApiImpl implements ClientsApi {
     public ClientsResponseList getClients() {
 
         List<Empresa> empresaList = clientApp.selectAllRows();
-        Stream<ClientsResponse> clientsResponseStream = empresaList
-                    .stream().map(c -> clientsResponseConverter.apply(c)
-        );
-
         if(empresaList == null || empresaList.size() == 0) {
             throw new WebApplicationException("Could not fetch EmpresaList", Response.Status.NOT_FOUND);
         }
+
+        Stream<ClientsResponse> clientsResponseStream = empresaList
+                    .stream().map(c -> clientsResponseConverter.apply(c)
+        );
 
         ClientsResponseList responseList = new ClientsResponseList();
         responseList.setClientsResponses(clientsResponseStream.collect(Collectors.toList()));

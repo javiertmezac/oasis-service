@@ -9,6 +9,13 @@ public class ContactsResponseConverter implements Function<Contacto, ContactsRes
     @Override
     public ContactsResponse apply(Contacto contacto) {
         ContactsResponse response = new ContactsResponse();
-        return null;
+        response.setContactId(contacto.getId());
+        response.setContactName(contacto.getNombre());
+        response.setContactLastName(contacto.getApellidop());
+        response.setContactSurName(contacto.getApellidom());
+        response.setContactPhone(contacto.getCelular());
+        response.setContactTel(contacto.getCasa());
+        response.setContactEmail(contacto.getEmail());
+        return response;
     }
 }
