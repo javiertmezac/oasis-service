@@ -9,6 +9,8 @@ import com.google.inject.name.Names;
 import com.jtmc.apps.oasis.api.filter.CorsFilter;
 import com.jtmc.apps.oasis.api.filter.JWTRequiredFilter;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsApiImpl;
+import com.jtmc.apps.oasis.api.v1.contacts.ContactsApi;
+import com.jtmc.apps.oasis.api.v1.contacts.ContactsApiImpl;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApi;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApiImpl;
 import com.jtmc.apps.oasis.api.v1.login.LoginApi;
@@ -41,6 +43,7 @@ public class Launcher {
             bind(ClientsApiImpl.class);
             bind(HealthcheckApi.class).to(HealthcheckApiImpl.class);
             bind(LoginApi.class).to(LoginApiImpl.class);
+            bind(ContactsApi.class).to(ContactsApiImpl.class);
 
 
             Properties myProperties = new Properties();
@@ -63,7 +66,8 @@ public class Launcher {
                     injector.getInstance(JacksonJsonProvider.class),
                     injector.getInstance(ClientsApiImpl.class),
                     injector.getInstance(HealthcheckApiImpl.class),
-                    injector.getInstance(LoginApiImpl.class)
+                    injector.getInstance(LoginApiImpl.class),
+                    injector.getInstance(ContactsApiImpl.class)
             );
         }
     }

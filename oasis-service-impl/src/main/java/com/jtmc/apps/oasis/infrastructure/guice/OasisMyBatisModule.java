@@ -1,6 +1,7 @@
 package com.jtmc.apps.oasis.infrastructure.guice;
 
 import com.google.inject.name.Names;
+import com.jtmc.apps.oasis.infrastructure.ContactoMapper;
 import com.jtmc.apps.oasis.infrastructure.EmpresaMapper;
 import com.jtmc.apps.oasis.infrastructure.UsersMapper;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
@@ -28,5 +29,6 @@ public class OasisMyBatisModule extends MyBatisModule {
         Names.bindProperties(binder(), myBatisProperties);
         addMapperClass(EmpresaMapper.class);
         addMapperClass(UsersMapper.class);
+        addMapperClass(ContactoMapper.class);
     }
 }
