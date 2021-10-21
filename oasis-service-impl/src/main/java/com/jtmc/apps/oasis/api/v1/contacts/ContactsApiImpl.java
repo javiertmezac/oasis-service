@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
 import com.jtmc.apps.oasis.application.contacts.ContactsAppImpl;
 import com.jtmc.apps.oasis.domain.Contacto;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -11,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @JWTRequired
 public class ContactsApiImpl implements ContactsApi {
@@ -21,12 +25,15 @@ public class ContactsApiImpl implements ContactsApi {
     @Inject
     private ContactsResponseConverter contactsResponseConverter;
 
+    @Inject
+    private ContactsConverter contactsConverter;
+
     @Override
     public ContactsResponseList getContacts() {
         List<Contacto> contactList = contactsApp.selectAllRows();
 
         if (contactList == null || contactList.size() == 0) {
-            throw new WebApplicationException("Could not getch ContactsList",
+            throw new WebApplicationException("Could not fetch ContactsList",
                     Response.Status.NOT_FOUND);
         }
 
@@ -46,5 +53,40 @@ public class ContactsApiImpl implements ContactsApi {
                     Response.Status.NOT_FOUND);
         }
         return contactsResponseConverter.apply(contact.get());
+    }
+
+    @Override
+    public Response createContact(ContactRequest contactRequest) {
+        checkNotNull(contactRequest, "ContactRequest object is null");
+        checkArgument(StringUtils.isNotBlank(contactRequest.getContactName()), "ContactName is not valid");
+        checkArgument(StringUtils.isNotBlank(contactRequest.getContactLastName()), "ContactLastName is not valid");
+
+        int newContact = 0;
+        checkArgument(contactRequest.getContactId() == newContact, "ContactId not valid");
+
+        contactRequest.setContactId(null);
+        int value = contactsApp.createContact(contactsConverter.apply(contactRequest));
+        if (value != 1) {
+            throw new WebApplicationException("Contact record not inserted", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.println("Contact Inserted successfully");
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response updateContact(ContactRequest contactRequest){
+        checkNotNull(contactRequest, "ContactRequest object is null");
+        checkArgument(StringUtils.isNotBlank(contactRequest.getContactName()), "ContactName is not valid");
+        checkArgument(StringUtils.isNotBlank(contactRequest.getContactLastName()), "ContactLastName is not valid");
+
+        int newContact = 0;
+        checkArgument(contactRequest.getContactId() != newContact, "ContactId not valid");
+        int value = contactsApp.updateContact(contactsConverter.apply(contactRequest));
+        if (value != 1) {
+            throw new WebApplicationException("Contact record not updated", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.println("Contact updated successfully");
+        return Response.ok().build();
+
     }
 }

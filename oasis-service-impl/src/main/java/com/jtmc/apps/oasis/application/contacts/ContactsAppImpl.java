@@ -28,4 +28,23 @@ public class ContactsAppImpl {
             return mapper.selectByPrimaryKey(contactId);
         }
     }
+    public int createContact(Contacto c) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            ContactoMapper mapper = session.getMapper(ContactoMapper.class);
+            return mapper.insertSelective(c);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Internal Error while inserting new contact");
+        }
+    }
+
+    public int updateContact(Contacto c) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            ContactoMapper mapper = session.getMapper(ContactoMapper.class);
+            return mapper.updateByPrimaryKeySelective(c);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(String.format("Internal Error while updating new contact: %s", c.getId()));
+        }
+    }
 }
