@@ -1,7 +1,6 @@
 package com.jtmc.apps.oasis.application.users;
 
 import com.google.inject.Inject;
-import com.jtmc.apps.oasis.infrastructure.UsersDynamicSqlSupport;
 import com.jtmc.apps.oasis.infrastructure.UsersMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

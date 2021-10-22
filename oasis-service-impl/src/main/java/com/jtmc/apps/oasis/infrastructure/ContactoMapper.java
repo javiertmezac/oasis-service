@@ -96,8 +96,9 @@ public interface ContactoMapper {
     @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-10-17T21:55:53.14934-07:00", comments="Source Table: Contacto")
     default int insert(Contacto record) {
         return MyBatis3Utils.insert(this::insert, record, contacto, c ->
-            c.map(id).toProperty("id")
-            .map(nombre).toProperty("nombre")
+//            c.map(id).toProperty("id")
+
+            c.map(nombre).toProperty("nombre")
             .map(apellidop).toProperty("apellidop")
             .map(apellidom).toProperty("apellidom")
             .map(celular).toProperty("celular")

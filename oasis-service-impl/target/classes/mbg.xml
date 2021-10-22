@@ -4,6 +4,9 @@
 <generatorConfiguration>
 <!--    MyBatis3DynamicSql-->
     <context id="OasisTables" targetRuntime="MyBatis3DynamicSql">
+
+        <plugin type="org.mybatis.generator.plugins.VirtualPrimaryKeyPlugin" />
+
         <jdbcConnection driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"
                         connectionURL="jdbc:sqlserver://localhost;database=DB_9B1BAC_dbOasis;user=sa;password=Password123!" />
 
@@ -18,6 +21,9 @@
             <property name="virtualKeyColumns" value="id"/>
         </table>
         <table tableName="Contacto" >
+            <property name="virtualKeyColumns" value="id"/>
+        </table>
+        <table tableName="VentaPublico" >
             <property name="virtualKeyColumns" value="id"/>
         </table>
     </context>

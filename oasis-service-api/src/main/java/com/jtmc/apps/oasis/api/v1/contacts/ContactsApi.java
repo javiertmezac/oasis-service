@@ -1,10 +1,8 @@
 package com.jtmc.apps.oasis.api.v1.contacts;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/v1/contacts")
 public interface ContactsApi {
@@ -18,4 +16,14 @@ public interface ContactsApi {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     ContactsResponse getContact(@PathParam("id") int contactId);
+
+    @POST
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response createContact(ContactRequest contactRequest);
+
+    @PUT
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response updateContact(ContactRequest contactRequest);
 }
