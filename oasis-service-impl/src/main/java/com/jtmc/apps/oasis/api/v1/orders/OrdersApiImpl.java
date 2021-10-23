@@ -1,0 +1,71 @@
+package com.jtmc.apps.oasis.api.v1.orders;
+
+import com.google.inject.Inject;
+import com.jtmc.apps.oasis.application.clients.ClientAppImpl;
+import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
+import com.jtmc.apps.oasis.application.orders.OrdersAppImpl;
+import com.jtmc.apps.oasis.domain.Empresa;
+import com.jtmc.apps.oasis.domain.Trabajador;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.*;
+
+public class OrdersApiImpl implements OrdersApi {
+
+    final static int HIGH_PRIORITY = 1;
+    final static int NOTIFICATION_CREATED = 4;
+
+    @Inject
+    private OrdersAppImpl ordersApp;
+
+    @Inject
+    private ClientAppImpl clientApp;
+
+    @Inject
+    private EmployeesAppImpl employeesApp;
+
+    @Inject
+    private OrdersConverter ordersConverter;
+
+    @Override
+    public Response createOrder(OrderRequest orderRequest) {
+        checkNotNull(orderRequest, "OrderRequest object is null");
+
+        int newOrder = 0;
+        checkArgument(orderRequest.getOrderId() != null && orderRequest.getOrderId() == newOrder, "Invalid OrderId");
+        checkArgument(orderRequest.getEmployeeId() > 0,"Invalid EmployeeId");
+        checkArgument(orderRequest.getClientId() > 0,"Invalid ClientId");
+        checkNotNull(orderRequest.getRegistrationDate(), "Provide a registrationDate");
+        checkNotNull(orderRequest.getDeliveryDate(), "Provide a deliveryDate");
+
+        Optional<Empresa> client = clientApp.selectOne(orderRequest.getClientId());
+        if(!client.isPresent()) {
+            throw new WebApplicationException("Client not Found", Response.Status.NOT_FOUND);
+        }
+
+        Optional<Trabajador> employee = employeesApp.selectOne(orderRequest.getEmployeeId());
+        if(!employee.isPresent()) {
+            throw new WebApplicationException("Employee not Found", Response.Status.NOT_FOUND);
+        }
+
+        orderRequest.setOrderId(null);
+        if (orderRequest.getNotification() == 0) {
+            orderRequest.setNotification(NOTIFICATION_CREATED);
+        }
+        if(orderRequest.getPriority() == 0) {
+            orderRequest.setPriority(HIGH_PRIORITY);
+        }
+
+        int value = ordersApp.createOrder(ordersConverter.apply(orderRequest));
+        int validState = 1;
+        if (value != validState) {
+            throw new WebApplicationException("Order record not inserted", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.println("Order Inserted Successfully");
+        return Response.ok().build();
+    }
+}

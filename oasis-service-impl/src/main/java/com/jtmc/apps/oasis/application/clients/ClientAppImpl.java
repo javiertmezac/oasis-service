@@ -19,8 +19,6 @@ public class ClientAppImpl {
         try(SqlSession session = sqlSessionFactory.openSession()) {
             EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
             return mapper.select(SelectDSLCompleter.allRows());
-
-
         }
     }
 
