@@ -4,15 +4,20 @@ import com.google.inject.Inject;
 import com.jtmc.apps.oasis.application.clients.ClientAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
 import com.jtmc.apps.oasis.application.orders.OrdersAppImpl;
+import com.jtmc.apps.oasis.domain.CustomOrder;
 import com.jtmc.apps.oasis.domain.Empresa;
+import com.jtmc.apps.oasis.domain.Pedido;
 import com.jtmc.apps.oasis.domain.Trabajador;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class OrdersApiImpl implements OrdersApi {
 
@@ -31,12 +36,43 @@ public class OrdersApiImpl implements OrdersApi {
     @Inject
     private OrdersConverter ordersConverter;
 
+    @Inject
+    private OrdersResponseConverter ordersResponseConverter;
+
+    @Override
+    public OrdersResponseList getOrders() {
+        List<CustomOrder> ordersList = ordersApp.selectNotTerminatedRecords();
+
+        if (ordersList == null || ordersList.size() == 0) {
+            throw new WebApplicationException("Could not fetch Orders",
+                    Response.Status.NOT_FOUND);
+        }
+
+        Stream<OrdersResponse> ordersResponseStream =
+                ordersList.stream().map(o -> ordersResponseConverter.apply(o));
+
+        OrdersResponseList responseList = new OrdersResponseList();
+        responseList.setOrdersList(ordersResponseStream.collect(Collectors.toList()));
+        return responseList;
+    }
+
+    @Override
+    public OrdersResponse getOrder(int orderId) {
+        Optional<CustomOrder> order = ordersApp.selectOne(orderId);
+        if (!order.isPresent()) {
+            throw new WebApplicationException("Order not Found",
+                    Response.Status.NOT_FOUND);
+        }
+        return ordersResponseConverter.apply(order.get());
+    }
+
     @Override
     public Response createOrder(OrderRequest orderRequest) {
         checkNotNull(orderRequest, "OrderRequest object is null");
 
         int newOrder = 0;
-        checkArgument(orderRequest.getOrderId() != null && orderRequest.getOrderId() == newOrder, "Invalid OrderId");
+        checkArgument(orderRequest.getOrderId() != null && orderRequest.getOrderId() == newOrder,
+                "Invalid OrderId");
         checkArgument(orderRequest.getEmployeeId() > 0,"Invalid EmployeeId");
         checkArgument(orderRequest.getClientId() > 0,"Invalid ClientId");
         checkNotNull(orderRequest.getRegistrationDate(), "Provide a registrationDate");
@@ -68,4 +104,10 @@ public class OrdersApiImpl implements OrdersApi {
         System.out.println("Order Inserted Successfully");
         return Response.ok().build();
     }
+
+    /* todo: review update functionality
+    once the order has been assigned a note with an employee, the employee cannot be
+    modified, but order can be "canceled/removed"
+     */
+
 }
