@@ -1,20 +1,15 @@
 package com.jtmc.apps.oasis.application.orders;
 
-import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.domain.CustomOrder;
-import com.jtmc.apps.oasis.domain.Empresa;
 import com.jtmc.apps.oasis.domain.Pedido;
 import com.jtmc.apps.oasis.infrastructure.*;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.select.join.JoinCondition;
-import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
-import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.jtmc.apps.oasis.infrastructure.PedidoDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.select.SelectDSL.select;
 
 public class OrdersAppImpl {
 
@@ -42,6 +36,7 @@ public class OrdersAppImpl {
                                     .join(TrabajadorDynamicSqlSupport.trabajador, "employee")
                                     .on(TrabajadorDynamicSqlSupport.id, SqlBuilder.equalTo(idchofer))
                                     .where(idnotificacion, SqlBuilder.isNotEqualTo(NOTIFICATION_TERMINATED))
+                                    .and(status, SqlBuilder.isTrue())
                     );
             return mapper.selectManyCustomOrders(statementProvider);
         }

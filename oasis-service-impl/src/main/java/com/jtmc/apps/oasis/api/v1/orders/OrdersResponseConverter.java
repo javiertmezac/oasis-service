@@ -4,6 +4,7 @@ import com.jtmc.apps.oasis.domain.CustomOrder;
 import com.jtmc.apps.oasis.domain.Pedido;
 import com.jtmc.apps.oasis.infrastructure.CustomOrderMapper;
 
+import java.util.Date;
 import java.util.function.Function;
 
 public class OrdersResponseConverter implements Function<CustomOrder, OrdersResponse> {
@@ -17,13 +18,14 @@ public class OrdersResponseConverter implements Function<CustomOrder, OrdersResp
         response.setComments(p.getObservaciones());
         response.setNotification(p.getIdnotificacion());
         response.setPriority(p.getIdprioridad());
-        response.setDeliveryDate(p.getFechaentregar());
-        response.setRegistrationDate(p.getFecharegistro());
+        response.setDelivery(new Date(p.getFechaentregar().toEpochMilli()));
+        response.setRegistration(new Date(p.getFecharegistro().toEpochMilli()));
         response.setClientName(p.getClientName());
         response.setEmployeeName(p.getEmployeeName());
 
         response.setNotificationDescr(setOrderStatusDescription(p.getIdnotificacion()));
         response.setPriorityDescr(setOrderStatusDescription(p.getIdprioridad()));
+
         return response;
     }
 
