@@ -20,5 +20,6 @@ public interface OrdersApi {
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     Response createOrder(OrderRequest orderRequest);
 }

@@ -15,6 +15,8 @@ import com.jtmc.apps.oasis.api.filter.JWTRequiredFilter;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsApiImpl;
 import com.jtmc.apps.oasis.api.v1.contacts.ContactsApi;
 import com.jtmc.apps.oasis.api.v1.contacts.ContactsApiImpl;
+import com.jtmc.apps.oasis.api.v1.employees.EmployeeApi;
+import com.jtmc.apps.oasis.api.v1.employees.EmployeeApiImpl;
 import com.jtmc.apps.oasis.api.v1.exceptions.GenericRuntimeException;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApi;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApiImpl;
@@ -52,6 +54,7 @@ public class Launcher {
             bind(LoginApi.class).to(LoginApiImpl.class);
             bind(ContactsApi.class).to(ContactsApiImpl.class);
             bind(OrdersApi.class).to(OrdersApiImpl.class);
+            bind(EmployeeApi.class).to(EmployeeApiImpl.class);
 
 
             Properties myProperties = new Properties();
@@ -86,7 +89,8 @@ public class Launcher {
                     injector.getInstance(HealthcheckApiImpl.class),
                     injector.getInstance(LoginApiImpl.class),
                     injector.getInstance(ContactsApiImpl.class),
-                    injector.getInstance(OrdersApiImpl.class)
+                    injector.getInstance(OrdersApiImpl.class),
+                    injector.getInstance(EmployeeApiImpl.class)
             );
         }
     }
