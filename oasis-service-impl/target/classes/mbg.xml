@@ -23,7 +23,12 @@
         <table tableName="Contacto" >
             <property name="virtualKeyColumns" value="id"/>
         </table>
-        <table tableName="VentaPublico" >
+        <table tableName="Pedido" >
+            <property name="virtualKeyColumns" value="id"/>
+            <columnOverride column="fecharegistro" javaType="java.time.Instant" />
+            <columnOverride column="fechaentregar" javaType="java.time.Instant" />
+        </table>
+        <table tableName="Trabajador" >
             <property name="virtualKeyColumns" value="id"/>
         </table>
     </context>

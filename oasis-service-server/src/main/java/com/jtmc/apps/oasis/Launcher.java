@@ -1,5 +1,9 @@
 package com.jtmc.apps.oasis;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.collect.Sets;
 import com.google.inject.AbstractModule;
@@ -11,10 +15,15 @@ import com.jtmc.apps.oasis.api.filter.JWTRequiredFilter;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsApiImpl;
 import com.jtmc.apps.oasis.api.v1.contacts.ContactsApi;
 import com.jtmc.apps.oasis.api.v1.contacts.ContactsApiImpl;
+import com.jtmc.apps.oasis.api.v1.employees.EmployeeApi;
+import com.jtmc.apps.oasis.api.v1.employees.EmployeeApiImpl;
+import com.jtmc.apps.oasis.api.v1.exceptions.GenericRuntimeException;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApi;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApiImpl;
 import com.jtmc.apps.oasis.api.v1.login.LoginApi;
 import com.jtmc.apps.oasis.api.v1.login.LoginApiImpl;
+import com.jtmc.apps.oasis.api.v1.orders.OrdersApi;
+import com.jtmc.apps.oasis.api.v1.orders.OrdersApiImpl;
 import com.jtmc.apps.oasis.infrastructure.guice.OasisMyBatisModule;
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.eclipse.jetty.server.Server;
@@ -44,11 +53,22 @@ public class Launcher {
             bind(HealthcheckApi.class).to(HealthcheckApiImpl.class);
             bind(LoginApi.class).to(LoginApiImpl.class);
             bind(ContactsApi.class).to(ContactsApiImpl.class);
+            bind(OrdersApi.class).to(OrdersApiImpl.class);
+            bind(EmployeeApi.class).to(EmployeeApiImpl.class);
 
 
             Properties myProperties = new Properties();
             myProperties.setProperty("key", System.getenv("key"));
             Names.bindProperties(binder(), myProperties);
+
+
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                    .registerModules(new JavaTimeModule());
+            JacksonJsonProvider jsonProvider = new JacksonJsonProvider(objectMapper);
+            bind(ObjectMapper.class).toInstance(objectMapper);
+            bind(JacksonJsonProvider.class).toInstance(jsonProvider);
         }
     }
 
@@ -64,10 +84,13 @@ public class Launcher {
                     injector.getInstance(CorsFilter.class),
                     injector.getInstance(JWTRequiredFilter.class),
                     injector.getInstance(JacksonJsonProvider.class),
+                    injector.getInstance(GenericRuntimeException.class),
                     injector.getInstance(ClientsApiImpl.class),
                     injector.getInstance(HealthcheckApiImpl.class),
                     injector.getInstance(LoginApiImpl.class),
-                    injector.getInstance(ContactsApiImpl.class)
+                    injector.getInstance(ContactsApiImpl.class),
+                    injector.getInstance(OrdersApiImpl.class),
+                    injector.getInstance(EmployeeApiImpl.class)
             );
         }
     }

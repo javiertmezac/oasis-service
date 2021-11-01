@@ -85,8 +85,21 @@ public class ContactsApiImpl implements ContactsApi {
         if (value != 1) {
             throw new WebApplicationException("Contact record not updated", Response.Status.INTERNAL_SERVER_ERROR);
         }
-        System.out.println("Contact updated successfully");
+        System.out.printf("Contact %d updated successfully", contactRequest.getContactId());
         return Response.ok().build();
+    }
 
+    @Override
+    public Response deleteMarkerContact(int contactId) {
+        checkArgument(contactId > 0, "Invalid Contact Id");
+
+        int value = contactsApp.deleteMark(contactId);
+        if(value != 1) {
+            System.out.printf("Attempted to delete contactId %d but it failed.%n", contactId);
+            throw new WebApplicationException("Contact was not deleted mark successfully",
+                    Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.printf("Contact %d was deleted marked successfully.%n", contactId);
+        return Response.ok().build();
     }
 }
