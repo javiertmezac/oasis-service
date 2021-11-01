@@ -1,5 +1,4 @@
 package com.jtmc.apps.oasis.application.orders;
-
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.domain.CustomOrder;
 import com.jtmc.apps.oasis.domain.Pedido;
@@ -19,6 +18,8 @@ import java.util.Optional;
 import static com.jtmc.apps.oasis.infrastructure.PedidoDynamicSqlSupport.*;
 
 public class OrdersAppImpl {
+
+    //todo: all propagated exceptions should be managed in one generic to properly logged the error message
 
     final int NOTIFICATION_TERMINATED = 6;
 
@@ -81,4 +82,15 @@ public class OrdersAppImpl {
             throw new RuntimeException("Internal Error while inserting new order");
         }
     }
+
+    public int deleteMark(Pedido p) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            PedidoMapper mapper = session.getMapper(PedidoMapper.class);
+            return mapper.updateByPrimaryKeySelective(p);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Internal Error while updating/deleting order");
+        }
+    }
+
 }

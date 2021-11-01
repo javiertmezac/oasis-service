@@ -106,6 +106,24 @@ public class OrdersApiImpl implements OrdersApi {
         return Response.ok().build();
     }
 
+    @Override
+    public Response deleteMarkerOrder(int orderId) {
+        checkArgument(orderId > 0, "Invalid orderId");
+
+        Pedido updateOrder = new Pedido();
+        updateOrder.setId(orderId);
+        updateOrder.setStatus(false);
+
+        int value = ordersApp.deleteMark(updateOrder);
+        if(value != 1) {
+            System.out.printf("Attempted to delete orderId %d but it failed.$n", orderId);
+           throw new WebApplicationException("Order was not deleted successfully", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+        System.out.printf("Order %d was delete marked successfully.%n", orderId);
+        return Response.ok().build();
+    }
+
     /* todo: review update functionality
     once the order has been assigned a note with an employee, the employee cannot be
     modified, but order can be "canceled/removed"

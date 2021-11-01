@@ -22,6 +22,7 @@ public class OrdersResponseConverter implements Function<CustomOrder, OrdersResp
         response.setRegistration(new Date(p.getFecharegistro().toEpochMilli()));
         response.setClientName(p.getClientName());
         response.setEmployeeName(p.getEmployeeName());
+        response.setStatus(p.getStatus());
 
         response.setNotificationDescr(setOrderStatusDescription(p.getIdnotificacion()));
         response.setPriorityDescr(setOrderStatusDescription(p.getIdprioridad()));

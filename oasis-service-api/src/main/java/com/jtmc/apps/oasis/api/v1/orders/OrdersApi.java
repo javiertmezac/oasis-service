@@ -22,4 +22,9 @@ public interface OrdersApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     Response createOrder(OrderRequest orderRequest);
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response deleteMarkerOrder(@PathParam("id") int orderId);
 }
