@@ -116,8 +116,9 @@ public class OrdersApiImpl implements OrdersApi {
 
         int value = ordersApp.deleteMark(updateOrder);
         if(value != 1) {
-            System.out.printf("Attempted to delete orderId %d but it failed.$n", orderId);
-           throw new WebApplicationException("Order was not deleted successfully", Response.Status.INTERNAL_SERVER_ERROR);
+            System.out.printf("Attempted to delete orderId %d but it failed.%n", orderId);
+           throw new WebApplicationException("Order was not deleted successfully",
+                   Response.Status.INTERNAL_SERVER_ERROR);
         }
 
         System.out.printf("Order %d was delete marked successfully.%n", orderId);

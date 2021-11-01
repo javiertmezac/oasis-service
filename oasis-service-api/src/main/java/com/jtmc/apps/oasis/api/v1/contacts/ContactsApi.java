@@ -26,4 +26,9 @@ public interface ContactsApi {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     Response updateContact(ContactRequest contactRequest);
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response deleteMarkerContact(@PathParam("id") int contactId);
 }
