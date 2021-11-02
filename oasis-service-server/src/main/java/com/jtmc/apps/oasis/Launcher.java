@@ -22,6 +22,8 @@ import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApi;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApiImpl;
 import com.jtmc.apps.oasis.api.v1.login.LoginApi;
 import com.jtmc.apps.oasis.api.v1.login.LoginApiImpl;
+import com.jtmc.apps.oasis.api.v1.notes.NotesApi;
+import com.jtmc.apps.oasis.api.v1.notes.NotesApiImpl;
 import com.jtmc.apps.oasis.api.v1.orders.OrdersApi;
 import com.jtmc.apps.oasis.api.v1.orders.OrdersApiImpl;
 import com.jtmc.apps.oasis.infrastructure.guice.OasisMyBatisModule;
@@ -55,6 +57,7 @@ public class Launcher {
             bind(ContactsApi.class).to(ContactsApiImpl.class);
             bind(OrdersApi.class).to(OrdersApiImpl.class);
             bind(EmployeeApi.class).to(EmployeeApiImpl.class);
+            bind(NotesApi.class).to(NotesApiImpl.class);
 
 
             Properties myProperties = new Properties();
@@ -90,7 +93,8 @@ public class Launcher {
                     injector.getInstance(LoginApiImpl.class),
                     injector.getInstance(ContactsApiImpl.class),
                     injector.getInstance(OrdersApiImpl.class),
-                    injector.getInstance(EmployeeApiImpl.class)
+                    injector.getInstance(EmployeeApiImpl.class),
+                    injector.getInstance(NotesApiImpl.class)
             );
         }
     }
