@@ -34,31 +34,31 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface NotaMapper {
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.167944-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.17455-07:00", comments="Source Table: Nota")
     BasicColumn[] selectList = BasicColumn.columnList(id, nonota, idpedido, idchofer, fecharegistro, litros, creditocontado, total, lecturainicial, lecturafinal, llegada, descarga, salida, precio, status, litrosdescontados, razondescuento);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.159479-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.165257-07:00", comments="Source Table: Nota")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.160267-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.166441-07:00", comments="Source Table: Nota")
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.160647-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.166823-07:00", comments="Source Table: Nota")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<Nota> insertStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.161234-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.167437-07:00", comments="Source Table: Nota")
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<Nota> multipleInsertStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.161689-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.167926-07:00", comments="Source Table: Nota")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("NotaResult")
     Optional<Nota> selectOne(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.162105-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.168333-07:00", comments="Source Table: Nota")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="NotaResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
@@ -81,28 +81,28 @@ public interface NotaMapper {
     })
     List<Nota> selectMany(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.163221-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.169804-07:00", comments="Source Table: Nota")
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.163574-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.170148-07:00", comments="Source Table: Nota")
     default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.countFrom(this::count, nota, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.163889-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.170554-07:00", comments="Source Table: Nota")
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, nota, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.16423-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.170932-07:00", comments="Source Table: Nota")
     default int deleteByPrimaryKey(Integer id_) {
         return delete(c -> 
             c.where(id, isEqualTo(id_))
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.164612-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.171307-07:00", comments="Source Table: Nota")
     default int insert(Nota record) {
         return MyBatis3Utils.insert(this::insert, record, nota, c ->
             c.map(id).toProperty("id")
@@ -125,7 +125,7 @@ public interface NotaMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.165532-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.172321-07:00", comments="Source Table: Nota")
     default int insertMultiple(Collection<Nota> records) {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, nota, c ->
             c.map(id).toProperty("id")
@@ -148,7 +148,7 @@ public interface NotaMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.166035-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.172783-07:00", comments="Source Table: Nota")
     default int insertSelective(Nota record) {
         return MyBatis3Utils.insert(this::insert, record, nota, c ->
             c.map(id).toPropertyWhenPresent("id", record::getId)
@@ -171,34 +171,34 @@ public interface NotaMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.168764-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.175724-07:00", comments="Source Table: Nota")
     default Optional<Nota> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, nota, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.169154-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.176135-07:00", comments="Source Table: Nota")
     default List<Nota> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, nota, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.169572-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.176483-07:00", comments="Source Table: Nota")
     default List<Nota> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, nota, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.169968-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.176832-07:00", comments="Source Table: Nota")
     default Optional<Nota> selectByPrimaryKey(Integer id_) {
         return selectOne(c ->
             c.where(id, isEqualTo(id_))
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.170361-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.177142-07:00", comments="Source Table: Nota")
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, nota, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.170746-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.177513-07:00", comments="Source Table: Nota")
     static UpdateDSL<UpdateModel> updateAllColumns(Nota record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalTo(record::getId)
                 .set(nonota).equalTo(record::getNonota)
@@ -219,7 +219,7 @@ public interface NotaMapper {
                 .set(razondescuento).equalTo(record::getRazondescuento);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.171252-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.177999-07:00", comments="Source Table: Nota")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(Nota record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(nonota).equalToWhenPresent(record::getNonota)
@@ -240,7 +240,7 @@ public interface NotaMapper {
                 .set(razondescuento).equalToWhenPresent(record::getRazondescuento);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.17199-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.178718-07:00", comments="Source Table: Nota")
     default int updateByPrimaryKey(Nota record) {
         return update(c ->
             c.set(nonota).equalTo(record::getNonota)
@@ -263,7 +263,7 @@ public interface NotaMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T00:25:56.172574-07:00", comments="Source Table: Nota")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-02T16:56:20.179205-07:00", comments="Source Table: Nota")
     default int updateByPrimaryKeySelective(Nota record) {
         return update(c ->
             c.set(nonota).equalToWhenPresent(record::getNonota)

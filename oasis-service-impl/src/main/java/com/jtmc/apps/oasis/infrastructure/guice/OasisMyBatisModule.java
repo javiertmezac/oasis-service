@@ -31,6 +31,7 @@ public class OasisMyBatisModule extends MyBatisModule {
         addMapperClass(PedidoMapper.class);
         addMapperClass(TrabajadorMapper.class);
         addMapperClass(NotaMapper.class);
+        addMapperClass(AbonoMapper.class);
 
         addMapperClass(CustomOrderMapper.class);
         addMapperClass(CustomNoteMapper.class);

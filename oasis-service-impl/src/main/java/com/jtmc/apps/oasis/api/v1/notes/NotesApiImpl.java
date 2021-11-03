@@ -1,6 +1,7 @@
 package com.jtmc.apps.oasis.api.v1.notes;
 
 import com.google.inject.Inject;
+import com.jtmc.apps.oasis.application.abonos.AbonoAppImpl;
 import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
 import com.jtmc.apps.oasis.domain.CustomNote;
 
@@ -16,11 +17,14 @@ public class NotesApiImpl implements NotesApi {
     private NotesAppImpl notesApp;
 
     @Inject
+    private AbonoAppImpl abonoApp;
+
+    @Inject
     private NotesResponseConverter notesResponseConverter;
 
     @Override
     public NotesResponseList getNotes() {
-        List<CustomNote> noteList = notesApp.selectAllNonPaidNotes();
+        List<CustomNote> noteList = notesApp.selectAllRecords();
 
         if(noteList == null || noteList.size() == 0) {
             throw new WebApplicationException("Could not fetch Notes",
