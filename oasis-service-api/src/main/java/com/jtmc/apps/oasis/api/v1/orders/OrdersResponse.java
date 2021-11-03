@@ -11,6 +11,16 @@ public class OrdersResponse extends OrdersBase {
     private Date delivery;
     private Date registration;
 
+    private String note;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public Date getDelivery() {
         return delivery;
     }

@@ -15,7 +15,7 @@ public class NotesResponseConverter implements Function<CustomNote, NotesRespons
         notesResponse.setOrderId(customNote.getIdpedido());
         notesResponse.setClientName(customNote.getClientName());
         notesResponse.setEmployeeName(customNote.getEmployeeName());
-        notesResponse.setRegistration(new Date(customNote.getFecharegistro().getEpochSecond()));
+        notesResponse.setRegistration(new Date(customNote.getFecharegistro().toEpochMilli()));
         notesResponse.setLiters(customNote.getLitros());
         notesResponse.setCredit(customNote.getCreditocontado());
         notesResponse.setTotal(customNote.getTotal());

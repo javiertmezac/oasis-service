@@ -31,14 +31,18 @@ public class OrdersAppImpl {
             CustomOrderMapper mapper = session.getMapper(CustomOrderMapper.class);
 
             SelectStatementProvider statementProvider = MyBatis3Utils
-                    .select(addColumnToOrderBasicColumns(), pedido,
+                    .select(addColumnToOrderBasicColumns(NotaDynamicSqlSupport.nonota.as("note")), pedido,
                             c -> c.join(EmpresaDynamicSqlSupport.empresa, "client")
                                     .on(EmpresaDynamicSqlSupport.id, SqlBuilder.equalTo(PedidoDynamicSqlSupport.idempresa))
                                     .join(TrabajadorDynamicSqlSupport.trabajador, "employee")
                                     .on(TrabajadorDynamicSqlSupport.id, SqlBuilder.equalTo(idchofer))
+                                    .leftJoin(NotaDynamicSqlSupport.nota, "note")
+                                    .on(NotaDynamicSqlSupport.idpedido, SqlBuilder.equalTo(pedido.id))
                                     .where(idnotificacion, SqlBuilder.isNotEqualTo(NOTIFICATION_TERMINATED))
                                     .and(status, SqlBuilder.isTrue())
                     );
+
+            System.out.printf("orders not terminated: %s%n", statementProvider.getSelectStatement());
             return mapper.selectManyCustomOrders(statementProvider);
         }
     }
