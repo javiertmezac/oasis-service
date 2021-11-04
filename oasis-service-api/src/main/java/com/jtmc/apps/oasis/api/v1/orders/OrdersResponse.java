@@ -12,6 +12,15 @@ public class OrdersResponse extends OrdersBase {
     private Date registration;
 
     private String note;
+    private int noteId;
+
+    public int getNoteId() {
+        return noteId;
+    }
+
+    public void setNoteId(int noteId) {
+        this.noteId = noteId;
+    }
 
     public String getNote() {
         return note;

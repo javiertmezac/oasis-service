@@ -11,6 +11,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AbonoAppImpl {
 
@@ -31,6 +32,24 @@ public class AbonoAppImpl {
                     );
 
              return mapper.selectMany(statementProvider);
+        }
+    }
+
+    public Optional<Abono> selectPaymentStatus(int idNote) {
+        try(SqlSession session = sqlSessionFactory.openSession()) {
+            AbonoMapper mapper = session.getMapper(AbonoMapper.class);
+
+            BasicColumn[] basicColumn = BasicColumn.columnList(AbonoDynamicSqlSupport.idnota,
+                    SqlBuilder.sum(AbonoDynamicSqlSupport.cantidad).as("cantidad"));
+
+            SelectStatementProvider statementProvider = MyBatis3Utils
+                    .select(basicColumn, AbonoDynamicSqlSupport.abono,
+                            c -> c.where(AbonoDynamicSqlSupport.status, SqlBuilder.isTrue())
+                                    .and(AbonoDynamicSqlSupport.idnota, SqlBuilder.isEqualTo(idNote))
+                                    .groupBy(AbonoDynamicSqlSupport.idnota)
+                    );
+
+            return mapper.selectOne(statementProvider);
         }
     }
 }

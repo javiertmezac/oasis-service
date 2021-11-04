@@ -1,6 +1,7 @@
 package com.jtmc.apps.oasis.application.orders;
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.domain.CustomOrder;
+import com.jtmc.apps.oasis.domain.Nota;
 import com.jtmc.apps.oasis.domain.Pedido;
 import com.jtmc.apps.oasis.infrastructure.*;
 import org.apache.ibatis.session.SqlSession;
@@ -31,7 +32,7 @@ public class OrdersAppImpl {
             CustomOrderMapper mapper = session.getMapper(CustomOrderMapper.class);
 
             SelectStatementProvider statementProvider = MyBatis3Utils
-                    .select(addColumnToOrderBasicColumns(NotaDynamicSqlSupport.nonota.as("note")), pedido,
+                    .select(addColumnToOrderBasicColumns(NotaDynamicSqlSupport.nonota.as("note"), NotaDynamicSqlSupport.id.as("noteId")), pedido,
                             c -> c.join(EmpresaDynamicSqlSupport.empresa, "client")
                                     .on(EmpresaDynamicSqlSupport.id, SqlBuilder.equalTo(PedidoDynamicSqlSupport.idempresa))
                                     .join(TrabajadorDynamicSqlSupport.trabajador, "employee")
@@ -42,7 +43,6 @@ public class OrdersAppImpl {
                                     .and(status, SqlBuilder.isTrue())
                     );
 
-            System.out.printf("orders not terminated: %s%n", statementProvider.getSelectStatement());
             return mapper.selectManyCustomOrders(statementProvider);
         }
     }
