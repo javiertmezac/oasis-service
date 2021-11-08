@@ -5,11 +5,11 @@ import com.jtmc.apps.oasis.domain.Nota;
 import java.util.Date;
 import java.util.function.Function;
 
-public class NoteConverterToNotesResponse implements Function<Nota, NotesBaseResponse> {
+public class NoteConverterToNotesResponse implements Function<Nota, NotesResponse> {
 
     @Override
-    public NotesBaseResponse apply(Nota nota) {
-        NotesBaseResponse response = new NotesBaseResponse();
+    public NotesResponse apply(Nota nota) {
+        NotesResponse response = new NotesResponse();
         response.setNoteId(nota.getId());
         response.setNote(nota.getNonota());
         response.setCredit(nota.getCreditocontado());

@@ -6,6 +6,7 @@ import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
 import com.jtmc.apps.oasis.domain.Abono;
 import com.jtmc.apps.oasis.domain.CustomNote;
 import com.jtmc.apps.oasis.domain.Nota;
+import org.apache.commons.lang3.NotImplementedException;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -46,13 +47,13 @@ public class NotesApiImpl implements NotesApi {
     }
 
     @Override
-    public NotesBaseResponse getNote(int noteId) {
+    public NotesResponse getNote(int noteId) {
         Optional<Nota> note = notesApp.selectOneNote(noteId);
 
         if(!note.isPresent()) {
             throw new WebApplicationException("Note not found", Response.Status.NOT_FOUND);
         }
-        NotesBaseResponse notesBaseResponse = converterToNotesResponse.apply(note.get());
+        NotesResponse notesBaseResponse = converterToNotesResponse.apply(note.get());
 
         Optional<Abono> paymentStatus = abonoApp.selectPaymentStatus(noteId);
         if (!paymentStatus.isPresent()) {
@@ -62,5 +63,10 @@ public class NotesApiImpl implements NotesApi {
             notesBaseResponse.setPaid(paid);
         }
         return notesBaseResponse;
+    }
+
+    @Override
+    public Response createNote(NotesRequest notesRequest) {
+        throw new NotImplementedException("not finished");
     }
 }

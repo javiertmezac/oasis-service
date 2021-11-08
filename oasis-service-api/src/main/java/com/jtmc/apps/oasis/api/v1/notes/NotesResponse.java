@@ -1,11 +1,19 @@
 package com.jtmc.apps.oasis.api.v1.notes;
 
-import java.util.Date;
-
-public class NotesResponse extends NotesBaseResponse {
+public class NotesResponse extends NotesBase {
     private String clientName;
     private String employeeName;
     private double debt;
+
+    private boolean paid;
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
 
     public String getClientName() {
         return clientName;

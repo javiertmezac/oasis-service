@@ -3,7 +3,7 @@ package com.jtmc.apps.oasis.api.v1.notes;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class NotesBaseResponse {
+public class NotesBase {
 
     private Integer noteId;
     private String note;
@@ -22,15 +22,6 @@ public class NotesBaseResponse {
     private Boolean status;
     private Integer discount;
     private String discountDescription;
-    private boolean paid;
-
-    public boolean isPaid() {
-        return paid;
-    }
-
-    public void setPaid(boolean paid) {
-        this.paid = paid;
-    }
 
     public Integer getNoteId() {
         return noteId;
