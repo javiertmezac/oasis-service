@@ -1,7 +1,7 @@
 package com.jtmc.apps.oasis.application.orders;
+
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.domain.CustomOrder;
-import com.jtmc.apps.oasis.domain.Nota;
 import com.jtmc.apps.oasis.domain.Pedido;
 import com.jtmc.apps.oasis.infrastructure.*;
 import org.apache.ibatis.session.SqlSession;
@@ -27,6 +27,10 @@ public class OrdersAppImpl {
     @Inject
     private SqlSessionFactory sqlSessionFactory;
 
+    /***
+     * Terminated means. The Order has been paid (Note should exist)
+     * @return
+     */
     public List<CustomOrder> selectNotTerminatedRecords() {
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             CustomOrderMapper mapper = session.getMapper(CustomOrderMapper.class);
@@ -41,6 +45,7 @@ public class OrdersAppImpl {
                                     .on(NotaDynamicSqlSupport.idpedido, SqlBuilder.equalTo(pedido.id))
                                     .where(idnotificacion, SqlBuilder.isNotEqualTo(NOTIFICATION_TERMINATED))
                                     .and(status, SqlBuilder.isTrue())
+                                    .orderBy(fechaentregar.descending())
                     );
 
             return mapper.selectManyCustomOrders(statementProvider);
