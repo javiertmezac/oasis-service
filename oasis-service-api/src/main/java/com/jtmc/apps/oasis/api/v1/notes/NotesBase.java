@@ -1,7 +1,7 @@
 package com.jtmc.apps.oasis.api.v1.notes;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
 
 public class NotesBase {
 
@@ -9,7 +9,7 @@ public class NotesBase {
     private String note;
     private Integer orderId;
     private Integer employeeId;
-    private Date registration;
+    private Instant registrationDate;
     private Integer liters;
     private Boolean credit;
     private Double total;
@@ -55,12 +55,12 @@ public class NotesBase {
         this.employeeId = employeeId;
     }
 
-    public Date getRegistration() {
-        return registration;
+    public Instant getRegistrationDate() {
+        return registrationDate;
     }
 
-    public void setRegistration(Date registration) {
-        this.registration = registration;
+    public void setRegistrationDate(Instant registration) {
+        this.registrationDate = registration;
     }
 
     public Integer getLiters() {

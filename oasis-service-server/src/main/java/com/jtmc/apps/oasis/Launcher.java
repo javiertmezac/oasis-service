@@ -18,6 +18,7 @@ import com.jtmc.apps.oasis.api.v1.contacts.ContactsApiImpl;
 import com.jtmc.apps.oasis.api.v1.employees.EmployeeApi;
 import com.jtmc.apps.oasis.api.v1.employees.EmployeeApiImpl;
 import com.jtmc.apps.oasis.api.v1.exceptions.GenericRuntimeException;
+import com.jtmc.apps.oasis.api.v1.exceptions.GenericWebApplicationExceptionMapper;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApi;
 import com.jtmc.apps.oasis.api.v1.healthcheck.HealthcheckApiImpl;
 import com.jtmc.apps.oasis.api.v1.login.LoginApi;
@@ -88,6 +89,7 @@ public class Launcher {
                     injector.getInstance(JWTRequiredFilter.class),
                     injector.getInstance(JacksonJsonProvider.class),
                     injector.getInstance(GenericRuntimeException.class),
+                    injector.getInstance(GenericWebApplicationExceptionMapper.class),
                     injector.getInstance(ClientsApiImpl.class),
                     injector.getInstance(HealthcheckApiImpl.class),
                     injector.getInstance(LoginApiImpl.class),

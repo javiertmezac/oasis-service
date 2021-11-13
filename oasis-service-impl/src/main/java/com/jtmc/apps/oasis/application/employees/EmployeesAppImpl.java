@@ -20,7 +20,8 @@ public class EmployeesAppImpl {
     public Optional<Trabajador> selectOne(int employeeId) {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             TrabajadorMapper mapper = session.getMapper(TrabajadorMapper.class);
-            return mapper.selectByPrimaryKey(employeeId);
+            return mapper.selectOne(c -> c.where(TrabajadorDynamicSqlSupport.id, SqlBuilder.isEqualTo(employeeId))
+                    .and(TrabajadorDynamicSqlSupport.status, SqlBuilder.isTrue()));
         }
     }
 

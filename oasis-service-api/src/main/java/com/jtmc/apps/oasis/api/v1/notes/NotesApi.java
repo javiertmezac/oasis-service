@@ -15,7 +15,7 @@ public interface NotesApi {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    NotesBase getNote(@PathParam("id") int noteId);
+    NotesResponse getNote(@PathParam("id") int noteId);
 
     @POST
     @Path("/")

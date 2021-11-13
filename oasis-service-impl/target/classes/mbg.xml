@@ -41,5 +41,13 @@
             <columnOverride column="fecharegistro" javaType="java.time.Instant" />
             <columnOverride column="cantidad" javaType="java.lang.Double" />
         </table>
+        <table tableName="PrecioGranel" >
+            <property name="virtualKeyColumns" value="id"/>
+            <columnOverride column="precio" javaType="java.lang.Double" />
+        </table>
+        <table tableName="Bloque" >
+            <property name="virtualKeyColumns" value="id"/>
+            <columnOverride column="fecharegistro" javaType="java.time.Instant" />
+        </table>
     </context>
 </generatorConfiguration>

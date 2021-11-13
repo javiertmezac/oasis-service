@@ -17,7 +17,8 @@ public class ClientsResponse {
     private Integer clientCp;
     private Boolean clientStatus;
     private Date clientRegistration;
-    private Byte clientPrice;
+    private double clientPrice;
+    private Byte clientPriceId;
     private Date clientNextClean;
 
     public Integer getClientId() {
@@ -124,19 +125,27 @@ public class ClientsResponse {
         this.clientRegistration = clientRegistration;
     }
 
-    public Byte getClientPrice() {
-        return clientPrice;
-    }
-
-    public void setClientPrice(Byte clientPrice) {
-        this.clientPrice = clientPrice;
-    }
-
     public Date getClientNextClean() {
         return clientNextClean;
     }
 
     public void setClientNextClean(Date clientNextClean) {
         this.clientNextClean = clientNextClean;
+    }
+
+    public double getClientPrice() {
+        return clientPrice;
+    }
+
+    public void setClientPrice(double clientPrice) {
+        this.clientPrice = clientPrice;
+    }
+
+    public Byte getClientPriceId() {
+        return clientPriceId;
+    }
+
+    public void setClientPriceId(Byte clientPriceId) {
+        this.clientPriceId = clientPriceId;
     }
 }
