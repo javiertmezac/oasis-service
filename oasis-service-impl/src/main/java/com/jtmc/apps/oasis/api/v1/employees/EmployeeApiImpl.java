@@ -4,7 +4,9 @@ import com.google.inject.Inject;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsResponse;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsResponseList;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
+import com.jtmc.apps.oasis.domain.CustomEmployee;
 import com.jtmc.apps.oasis.domain.Trabajador;
+import org.glassfish.jersey.internal.inject.Custom;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -21,6 +23,9 @@ public class EmployeeApiImpl implements  EmployeeApi {
     @Inject
     private EmployeeResponseConverter employeeResponseConverter;
 
+    @Inject
+    private CustomEmployeeResponseConverter customEmployeeResponseConverter;
+
     @Override
     public EmployeeResponse getEmployee(int employeeId) {
         Optional<Trabajador> employee = employeesApp.selectOne(employeeId);
@@ -33,15 +38,15 @@ public class EmployeeApiImpl implements  EmployeeApi {
     }
 
     @Override
-    public EmployeeResponseList getEmployees() {
-        List<Trabajador> employees = employeesApp.selectAllRecords();
+    public EmployeeResponseList getEmployees(boolean listBlockNumber) {
+        List<CustomEmployee> employees = employeesApp.selectAllRecords(listBlockNumber);
 
         if(employees == null || employees.size() == 0) {
             throw new WebApplicationException("Could not fetch Lista Trabajadores", Response.Status.NOT_FOUND);
         }
 
         Stream<EmployeeResponse> employeeResponseStream = employees
-                .stream().map(e -> employeeResponseConverter.apply(e)
+                .stream().map(e -> customEmployeeResponseConverter.apply(e)
                 );
 
         EmployeeResponseList responseList = new EmployeeResponseList();

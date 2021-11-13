@@ -111,7 +111,7 @@ public class NotesApiImpl implements NotesApi {
         }
 
         System.out.printf("Found Block with Id %s%n", block.get().getId());
-        System.out.println("Proceeding to create note");
+        System.out.printf("Proceeding to create note %s%n", notesRequest.getNote());
         notesRequest.setNoteId(null);
         int result = notesApp.insertNote(notesConverter.apply(notesRequest));
         int validState = 1;
@@ -124,11 +124,17 @@ public class NotesApiImpl implements NotesApi {
         int nextNumber = block.get().getSecuencia() + 1;
         Bloque nextBlock = block.get();
         nextBlock.setSecuencia(nextNumber);
+
+        if (nextNumber > nextBlock.getNumfinal()) {
+            System.out.printf("BlockId #%s has no more available notes. It will be terminated.%n", nextBlock.getId());
+            nextBlock.setStatus(false);
+        }
+
         if (blockApp.updateNextNumber(nextBlock) != 1) {
             System.out.printf("Error updating block for nextNumber: %s on blockId: %s", nextNumber, nextBlock.getId());
             throw new WebApplicationException("Could not update nextBlockNumber for Block", Response.Status.INTERNAL_SERVER_ERROR);
         }
-        System.out.printf("Block #%s update correctly.%n", block.get().getId());
+        System.out.printf("BlockId #%s update correctly.%n", nextBlock.getId());
 
         return Response.ok().build();
     }
