@@ -11,8 +11,14 @@ public class CustomEmployeeResponseConverter implements Function<CustomEmployee,
         EmployeeResponse response = new EmployeeResponse();
         response.setEmployeeId(trabajador.getId());
         response.setEmployeeName(trabajador.getNombre());
+        response.setTel(trabajador.getTelefono());
 
-        response.setNote(String.format("%s - %s", trabajador.getLetter(), trabajador.getNextBlockNumber()));
+        if (trabajador.getLetter() != Character.MIN_VALUE &&
+                trabajador.getNextBlockNumber() != null) {
+            response.setNote(String.format("%s - %s", trabajador.getLetter(), trabajador.getNextBlockNumber()));
+        } else {
+            response.setNote("no hay bloque asignado");
+        }
         return response;
     }
 }

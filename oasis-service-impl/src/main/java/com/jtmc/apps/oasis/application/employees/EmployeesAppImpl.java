@@ -54,4 +54,14 @@ public class EmployeesAppImpl {
             }
         }
     }
+
+    public int deleteMark(Trabajador employee){
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            TrabajadorMapper mapper = session.getMapper(TrabajadorMapper.class);
+            return mapper.updateByPrimaryKeySelective(employee);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

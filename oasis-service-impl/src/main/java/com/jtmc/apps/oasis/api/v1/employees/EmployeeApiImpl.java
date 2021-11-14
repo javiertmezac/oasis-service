@@ -15,6 +15,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class EmployeeApiImpl implements  EmployeeApi {
 
     @Inject
@@ -52,5 +54,23 @@ public class EmployeeApiImpl implements  EmployeeApi {
         EmployeeResponseList responseList = new EmployeeResponseList();
         responseList.setEmployeeList(employeeResponseStream.collect(Collectors.toList()));
         return responseList;
+    }
+
+    @Override
+    public Response deleteMarkerEmployee(int employeeId) {
+        checkArgument(employeeId > 0, "Invalid employeeId");
+
+        Trabajador employee = new Trabajador();
+        employee.setId(employeeId);
+        employee.setStatus(false);
+
+        int value = employeesApp.deleteMark(employee);
+        if(value != 1) {
+            System.out.printf("Attempted to delete employeeId %d but it failed.%n", employeeId);
+            throw new WebApplicationException("Employee was not deleted successfully",
+                    Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.printf("Employee %d was delete marked successfully.%n", employeeId);
+        return Response.ok().build();
     }
 }

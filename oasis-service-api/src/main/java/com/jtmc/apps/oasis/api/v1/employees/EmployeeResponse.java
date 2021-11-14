@@ -5,6 +5,15 @@ public class EmployeeResponse {
     private String employeeName;
 
     private String note;
+    private String tel;
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
 
     public String getNote() {
         return note;

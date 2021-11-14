@@ -2,6 +2,7 @@ package com.jtmc.apps.oasis.api.v1.employees;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/v1/employees")
 public interface EmployeeApi {
@@ -15,4 +16,9 @@ public interface EmployeeApi {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     EmployeeResponseList getEmployees(@QueryParam("listBlockNumber") @DefaultValue("false") boolean listBlockNumber);
+
+    @DELETE
+    @Path("/{id}")
+    Response deleteMarkerEmployee(@PathParam("id") int employeeId);
 }
+
