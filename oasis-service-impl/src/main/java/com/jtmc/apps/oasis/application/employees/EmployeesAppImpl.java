@@ -49,6 +49,7 @@ public class EmployeesAppImpl {
 
                 return mapper.selectManyCustomEmployees(statementProvider);
             } else {
+                //todo: for this scenario, return n/a instead of default ". - 0" note value
                 return mapper.selectCustomEmployee(c -> c.where(TrabajadorDynamicSqlSupport.status, SqlBuilder.isTrue()));
             }
         }
