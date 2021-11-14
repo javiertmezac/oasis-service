@@ -4,6 +4,24 @@ public class CustomEmployee extends Trabajador {
 
     private char letter;
     private Integer nextBlockNumber;
+    private Integer blockStartNumber;
+    private Integer blockEndNumber;
+
+    public Integer getBlockStartNumber() {
+        return blockStartNumber;
+    }
+
+    public void setBlockStartNumber(Integer blockStartNumber) {
+        this.blockStartNumber = blockStartNumber;
+    }
+
+    public Integer getBlockEndNumber() {
+        return blockEndNumber;
+    }
+
+    public void setBlockEndNumber(Integer blockEndNumber) {
+        this.blockEndNumber = blockEndNumber;
+    }
 
     public char getLetter() {
         return letter;

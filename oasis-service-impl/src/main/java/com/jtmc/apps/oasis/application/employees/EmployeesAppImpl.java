@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
@@ -37,19 +38,25 @@ public class EmployeesAppImpl {
                 ArrayList<BasicColumn> list = new ArrayList<>(Arrays.asList(TrabajadorMapper.selectList));
                 list.add(BloqueDynamicSqlSupport.letra.as("letter"));
                 list.add(BloqueDynamicSqlSupport.secuencia.as("nextBlockNumber"));
+                list.add(BloqueDynamicSqlSupport.numinicial.as("blockStartNumber"));
+                list.add(BloqueDynamicSqlSupport.numfinal.as("blockEndNumber"));
 
                 SelectStatementProvider statementProvider = MyBatis3Utils
                         .select(BasicColumn.columnList(list.toArray(new BasicColumn[0])),
                                 TrabajadorDynamicSqlSupport.trabajador,
-                                c -> c.join(BloqueDynamicSqlSupport.bloque)
-                                        .on(TrabajadorDynamicSqlSupport.id, SqlBuilder.equalTo(BloqueDynamicSqlSupport.idchofer))
-                                        .where(BloqueDynamicSqlSupport.status, SqlBuilder.isTrue())
-                                        .and(TrabajadorDynamicSqlSupport.status, SqlBuilder.isTrue())
+                                c -> c.leftJoin(BloqueDynamicSqlSupport.bloque)
+                                        .on(TrabajadorDynamicSqlSupport.id,
+                                                SqlBuilder.equalTo(BloqueDynamicSqlSupport.idchofer),
+                                                SqlBuilder.and(
+                                                        BloqueDynamicSqlSupport.status,
+                                                        SqlBuilder.equalTo(TrabajadorDynamicSqlSupport.status)
+                                                )
+                                        )
+                                        .where(TrabajadorDynamicSqlSupport.status, SqlBuilder.isTrue())
                         );
 
                 return mapper.selectManyCustomEmployees(statementProvider);
             } else {
-                //todo: for this scenario, return n/a instead of default ". - 0" note value
                 return mapper.selectCustomEmployee(c -> c.where(TrabajadorDynamicSqlSupport.status, SqlBuilder.isTrue()));
             }
         }

@@ -6,6 +6,24 @@ public class EmployeeResponse {
 
     private String note;
     private String tel;
+    private String block;
+    private String blockNumber;
+
+    public String getBlock() {
+        return block;
+    }
+
+    public void setBlock(String block) {
+        this.block = block;
+    }
+
+    public String getBlockNumber() {
+        return blockNumber;
+    }
+
+    public void setBlockNumber(String blockNumber) {
+        this.blockNumber = blockNumber;
+    }
 
     public String getTel() {
         return tel;
