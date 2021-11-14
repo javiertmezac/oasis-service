@@ -4,6 +4,16 @@ public class EmployeeResponse {
     private Integer employeeId;
     private String employeeName;
 
+    private String note;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public Integer getEmployeeId() {
         return employeeId;
     }

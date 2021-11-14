@@ -27,6 +27,9 @@ public class OrdersResponseConverter implements Function<CustomOrder, OrdersResp
         response.setNotificationDescr(setOrderStatusDescription(p.getIdnotificacion()));
         response.setPriorityDescr(setOrderStatusDescription(p.getIdprioridad()));
 
+        response.setNote(p.getNote());
+        response.setNoteId(p.getNoteId());
+
         return response;
     }
 

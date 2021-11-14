@@ -5,6 +5,25 @@ public class CustomOrder extends Pedido {
     private String clientName;
     private String employeeName;
 
+    private String note;
+    private int noteId;
+
+    public int getNoteId() {
+        return noteId;
+    }
+
+    public void setNoteId(int noteId) {
+        this.noteId = noteId;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public String getEmployeeName() {
         return employeeName;
     }

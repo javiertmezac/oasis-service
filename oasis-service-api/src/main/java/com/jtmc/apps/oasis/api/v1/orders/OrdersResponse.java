@@ -11,6 +11,25 @@ public class OrdersResponse extends OrdersBase {
     private Date delivery;
     private Date registration;
 
+    private String note;
+    private int noteId;
+
+    public int getNoteId() {
+        return noteId;
+    }
+
+    public void setNoteId(int noteId) {
+        this.noteId = noteId;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public Date getDelivery() {
         return delivery;
     }

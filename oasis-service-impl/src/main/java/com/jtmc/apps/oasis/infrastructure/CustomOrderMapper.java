@@ -29,6 +29,7 @@ public interface CustomOrderMapper extends PedidoMapper {
             @Result(column="idNotificacion", property="idnotificacion", jdbcType=JdbcType.INTEGER),
             @Result(column="idPrioridad", property="idprioridad", jdbcType=JdbcType.INTEGER),
             @Result(column="clientName", property="clientName", jdbcType=JdbcType.VARCHAR),
+            @Result(column="note", property="note", jdbcType=JdbcType.VARCHAR),
     })
     List<CustomOrder> selectManyCustomOrders(SelectStatementProvider selectStatement);
 

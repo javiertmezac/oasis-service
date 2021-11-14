@@ -1,9 +1,6 @@
 package com.jtmc.apps.oasis.api.v1.employees;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Path("/v1/employees")
@@ -17,5 +14,5 @@ public interface EmployeeApi {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    EmployeeResponseList getEmployees();
+    EmployeeResponseList getEmployees(@QueryParam("listBlockNumber") @DefaultValue("false") boolean listBlockNumber);
 }

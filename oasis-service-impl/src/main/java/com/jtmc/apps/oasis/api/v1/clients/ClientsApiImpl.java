@@ -3,6 +3,7 @@ package com.jtmc.apps.oasis.api.v1.clients;
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
 import com.jtmc.apps.oasis.application.clients.ClientAppImpl;
+import com.jtmc.apps.oasis.domain.CustomClient;
 import com.jtmc.apps.oasis.domain.Empresa;
 
 import javax.ws.rs.WebApplicationException;
@@ -20,6 +21,9 @@ public class ClientsApiImpl implements ClientsApi {
 
     @Inject
     private ClientsResponseConverter clientsResponseConverter;
+
+    @Inject
+    private CustomClientsResponseConverter customClientsResponseConverter;
 
     @Override
     public ClientsResponseList getClients() {
@@ -40,12 +44,12 @@ public class ClientsApiImpl implements ClientsApi {
 
     @Override
     public ClientsResponse getClient(int clientId) {
-         Optional<Empresa> empresa = clientApp.selectOne(clientId);
+         Optional<CustomClient> empresa = clientApp.selectOne(clientId);
 
         if (!empresa.isPresent()){
             throw new WebApplicationException("Empresa not Found", Response.Status.NOT_FOUND);
         }
 
-        return clientsResponseConverter.apply(empresa.get());
+        return customClientsResponseConverter.apply(empresa.get());
     }
 }

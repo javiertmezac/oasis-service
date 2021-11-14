@@ -4,14 +4,13 @@ import com.google.inject.Inject;
 import com.jtmc.apps.oasis.application.clients.ClientAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
 import com.jtmc.apps.oasis.application.orders.OrdersAppImpl;
+import com.jtmc.apps.oasis.domain.CustomClient;
 import com.jtmc.apps.oasis.domain.CustomOrder;
-import com.jtmc.apps.oasis.domain.Empresa;
 import com.jtmc.apps.oasis.domain.Pedido;
 import com.jtmc.apps.oasis.domain.Trabajador;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -79,7 +78,7 @@ public class OrdersApiImpl implements OrdersApi {
         checkNotNull(orderRequest.getRegistrationDate(), "Provide a registrationDate");
         checkNotNull(orderRequest.getDeliveryDate(), "Provide a deliveryDate");
 
-        Optional<Empresa> client = clientApp.selectOne(orderRequest.getClientId());
+        Optional<CustomClient> client = clientApp.selectOne(orderRequest.getClientId());
         if(!client.isPresent()) {
             throw new WebApplicationException("Client not Found", Response.Status.NOT_FOUND);
         }
