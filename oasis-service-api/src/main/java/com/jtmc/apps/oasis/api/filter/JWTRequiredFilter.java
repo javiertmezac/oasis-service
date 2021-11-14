@@ -1,8 +1,6 @@
 package com.jtmc.apps.oasis.api.filter;
 
 import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -34,7 +32,7 @@ public class JWTRequiredFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
         String authHeader = containerRequestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        if(authHeader == null) {
+        if(authHeader == null || authHeader.isEmpty() || authHeader.trim().isEmpty()) {
             throw new WebApplicationException("Expected Authorization Header", Response.Status.BAD_REQUEST);
         }
 
