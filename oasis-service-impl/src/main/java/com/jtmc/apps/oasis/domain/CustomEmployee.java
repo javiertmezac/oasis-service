@@ -3,7 +3,25 @@ package com.jtmc.apps.oasis.domain;
 public class CustomEmployee extends Trabajador {
 
     private char letter;
-    private int nextBlockNumber;
+    private Integer nextBlockNumber;
+    private Integer blockStartNumber;
+    private Integer blockEndNumber;
+
+    public Integer getBlockStartNumber() {
+        return blockStartNumber;
+    }
+
+    public void setBlockStartNumber(Integer blockStartNumber) {
+        this.blockStartNumber = blockStartNumber;
+    }
+
+    public Integer getBlockEndNumber() {
+        return blockEndNumber;
+    }
+
+    public void setBlockEndNumber(Integer blockEndNumber) {
+        this.blockEndNumber = blockEndNumber;
+    }
 
     public char getLetter() {
         return letter;
@@ -13,11 +31,11 @@ public class CustomEmployee extends Trabajador {
         this.letter = letter;
     }
 
-    public int getNextBlockNumber() {
+    public Integer getNextBlockNumber() {
         return nextBlockNumber;
     }
 
-    public void setNextBlockNumber(int nextBlockNumber) {
+    public void setNextBlockNumber(Integer nextBlockNumber) {
         this.nextBlockNumber = nextBlockNumber;
     }
 }

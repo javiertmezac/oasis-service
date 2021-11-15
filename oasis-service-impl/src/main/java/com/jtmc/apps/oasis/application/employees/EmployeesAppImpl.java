@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
@@ -29,29 +30,63 @@ public class EmployeesAppImpl {
         }
     }
 
-    public List<CustomEmployee> selectAllRecords(boolean listBlockNumber) {
+    public List<CustomEmployee> selectAllRecords() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             CustomEmployeeMapper mapper = session.getMapper(CustomEmployeeMapper.class);
 
-            if (listBlockNumber) {
-                ArrayList<BasicColumn> list = new ArrayList<>(Arrays.asList(TrabajadorMapper.selectList));
-                list.add(BloqueDynamicSqlSupport.letra.as("letter"));
-                list.add(BloqueDynamicSqlSupport.secuencia.as("nextBlockNumber"));
+            ArrayList<BasicColumn> list = new ArrayList<>(Arrays.asList(TrabajadorMapper.selectList));
+            list.add(BloqueDynamicSqlSupport.letra.as("letter"));
+            list.add(BloqueDynamicSqlSupport.secuencia.as("nextBlockNumber"));
+            list.add(BloqueDynamicSqlSupport.numinicial.as("blockStartNumber"));
+            list.add(BloqueDynamicSqlSupport.numfinal.as("blockEndNumber"));
 
-                SelectStatementProvider statementProvider = MyBatis3Utils
-                        .select(BasicColumn.columnList(list.toArray(new BasicColumn[0])),
-                                TrabajadorDynamicSqlSupport.trabajador,
-                                c -> c.join(BloqueDynamicSqlSupport.bloque)
-                                        .on(TrabajadorDynamicSqlSupport.id, SqlBuilder.equalTo(BloqueDynamicSqlSupport.idchofer))
-                                        .where(BloqueDynamicSqlSupport.status, SqlBuilder.isTrue())
-                                        .and(TrabajadorDynamicSqlSupport.status, SqlBuilder.isTrue())
-                        );
+            SelectStatementProvider statementProvider = MyBatis3Utils
+                    .select(BasicColumn.columnList(list.toArray(new BasicColumn[0])),
+                            TrabajadorDynamicSqlSupport.trabajador,
+                            c -> c.leftJoin(BloqueDynamicSqlSupport.bloque)
+                                    .on(TrabajadorDynamicSqlSupport.id,
+                                            SqlBuilder.equalTo(BloqueDynamicSqlSupport.idchofer),
+                                            SqlBuilder.and(
+                                                    BloqueDynamicSqlSupport.status,
+                                                    SqlBuilder.equalTo(TrabajadorDynamicSqlSupport.status)
+                                            )
+                                    )
+                                    .where(TrabajadorDynamicSqlSupport.status, SqlBuilder.isTrue())
+                    );
 
-                return mapper.selectManyCustomEmployees(statementProvider);
-            } else {
-                //todo: for this scenario, return n/a instead of default ". - 0" note value
-                return mapper.selectCustomEmployee(c -> c.where(TrabajadorDynamicSqlSupport.status, SqlBuilder.isTrue()));
-            }
+            return mapper.selectManyCustomEmployees(statementProvider);
+        }
+    }
+
+    public int deleteMark(Trabajador employee){
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            TrabajadorMapper mapper = session.getMapper(TrabajadorMapper.class);
+            employee.setStatus(false);
+            return mapper.updateByPrimaryKeySelective(employee);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public int insertEmployee(Trabajador e) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            TrabajadorMapper mapper = session.getMapper(TrabajadorMapper.class);
+            e.setStatus(true);
+            return mapper.insertSelective(e);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    public int updateEmployee(Trabajador employee){
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            TrabajadorMapper mapper = session.getMapper(TrabajadorMapper.class);
+            return mapper.updateByPrimaryKeySelective(employee);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 }

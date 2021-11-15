@@ -11,6 +11,8 @@ public class EmployeeResponseConverter implements Function<Trabajador, EmployeeR
         EmployeeResponse response = new EmployeeResponse();
         response.setEmployeeId(trabajador.getId());
         response.setEmployeeName(trabajador.getNombre());
+        response.setTel(trabajador.getTelefono());
+        response.setAddress(trabajador.getDireccion());
         return response;
     }
 }

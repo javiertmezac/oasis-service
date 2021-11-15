@@ -32,4 +32,15 @@ public class BlockAppImpl {
             throw e;
         }
     }
+
+    public int insertBlock(Bloque b) {
+        try(SqlSession session = sqlSessionFactory.openSession(true)) {
+            BloqueMapper mapper = session.getMapper(BloqueMapper.class);
+            b.setStatus(true);
+            return mapper.insertSelective(b);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

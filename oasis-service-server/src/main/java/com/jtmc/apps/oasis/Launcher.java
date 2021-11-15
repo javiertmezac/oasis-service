@@ -12,6 +12,8 @@ import com.google.inject.Module;
 import com.google.inject.name.Names;
 import com.jtmc.apps.oasis.api.filter.CorsFilter;
 import com.jtmc.apps.oasis.api.filter.JWTRequiredFilter;
+import com.jtmc.apps.oasis.api.v1.blocks.BlockApi;
+import com.jtmc.apps.oasis.api.v1.blocks.BlockApiImpl;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsApiImpl;
 import com.jtmc.apps.oasis.api.v1.contacts.ContactsApi;
 import com.jtmc.apps.oasis.api.v1.contacts.ContactsApiImpl;
@@ -59,6 +61,7 @@ public class Launcher {
             bind(OrdersApi.class).to(OrdersApiImpl.class);
             bind(EmployeeApi.class).to(EmployeeApiImpl.class);
             bind(NotesApi.class).to(NotesApiImpl.class);
+            bind(BlockApi.class).to(BlockApiImpl.class);
 
 
             Properties myProperties = new Properties();
@@ -96,7 +99,8 @@ public class Launcher {
                     injector.getInstance(ContactsApiImpl.class),
                     injector.getInstance(OrdersApiImpl.class),
                     injector.getInstance(EmployeeApiImpl.class),
-                    injector.getInstance(NotesApiImpl.class)
+                    injector.getInstance(NotesApiImpl.class),
+                    injector.getInstance(BlockApiImpl.class)
             );
         }
     }
