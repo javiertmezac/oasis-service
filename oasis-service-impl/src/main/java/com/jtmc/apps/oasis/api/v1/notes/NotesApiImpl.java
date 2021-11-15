@@ -90,7 +90,7 @@ public class NotesApiImpl implements NotesApi {
         checkArgument(notesRequest.getInitialData() > 0, "Invalid InitialData");
         checkArgument(notesRequest.getFinalData() > 0, "Invalid FinalData");
         checkArgument(notesRequest.getInitialData() < notesRequest.getFinalData(),
-                "InitialData should not be greater than FinalData");
+                "FinalData should be greater than InitialData");
         checkArgument(StringUtils.isNotBlank(notesRequest.getNote()), "Note number is not valid");
 
         Optional<Nota> note = notesApp.selectNoteByOrderId(notesRequest.getOrderId());

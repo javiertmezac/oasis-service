@@ -15,7 +15,17 @@ public interface EmployeeApi {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    EmployeeResponseList getEmployees(@QueryParam("listBlockNumber") @DefaultValue("false") boolean listBlockNumber);
+    EmployeeResponseList getEmployees();
+
+    @POST
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response createEmployee(EmployeeRequest employeeRequest);
+
+    @PUT
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response updateEmployee(EmployeeRequest employeeRequest);
 
     @DELETE
     @Path("/{id}")

@@ -2,6 +2,7 @@ package com.jtmc.apps.oasis.api.v1.employees;
 
 import com.jtmc.apps.oasis.domain.CustomEmployee;
 
+import java.util.Date;
 import java.util.function.Function;
 
 public class CustomEmployeeResponseConverter implements Function<CustomEmployee, EmployeeResponse> {
@@ -12,6 +13,8 @@ public class CustomEmployeeResponseConverter implements Function<CustomEmployee,
         response.setEmployeeId(trabajador.getId());
         response.setEmployeeName(trabajador.getNombre());
         response.setTel(trabajador.getTelefono());
+        response.setAddress(trabajador.getDireccion());
+        response.setRegistration(trabajador.getFecharegistro());
 
         if (trabajador.getLetter() != Character.MIN_VALUE &&
                 trabajador.getNextBlockNumber() != null) {
@@ -21,7 +24,7 @@ public class CustomEmployeeResponseConverter implements Function<CustomEmployee,
             );
             response.setNote(String.format("%s - %s", trabajador.getLetter(), trabajador.getNextBlockNumber()));
         } else {
-            String statusText = "no existe asignación";
+            String statusText = "n/a";
             response.setNote(statusText);
             response.setBlock(statusText);
             response.setBlockNumber(statusText);
