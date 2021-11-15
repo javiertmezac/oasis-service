@@ -36,17 +36,24 @@ public class OrdersAppImpl {
             CustomOrderMapper mapper = session.getMapper(CustomOrderMapper.class);
 
             SelectStatementProvider statementProvider = MyBatis3Utils
-                    .select(addColumnToOrderBasicColumns(NotaDynamicSqlSupport.nonota.as("note"), NotaDynamicSqlSupport.id.as("noteId")), pedido,
+                    .select(addColumnToOrderBasicColumns(NotaDynamicSqlSupport.nonota.as("note"),
+                                    NotaDynamicSqlSupport.id.as("noteId")), pedido,
                             c -> c.join(EmpresaDynamicSqlSupport.empresa, "client")
-                                    .on(EmpresaDynamicSqlSupport.id, SqlBuilder.equalTo(PedidoDynamicSqlSupport.idempresa))
+                                    .on(EmpresaDynamicSqlSupport.id,
+                                            SqlBuilder.equalTo(PedidoDynamicSqlSupport.idempresa)
+                                    )
                                     .join(TrabajadorDynamicSqlSupport.trabajador, "employee")
                                     .on(TrabajadorDynamicSqlSupport.id, SqlBuilder.equalTo(idchofer))
                                     .leftJoin(NotaDynamicSqlSupport.nota, "note")
-                                    .on(NotaDynamicSqlSupport.idpedido, SqlBuilder.equalTo(pedido.id))
+                                    .on(NotaDynamicSqlSupport.idpedido, SqlBuilder.equalTo(pedido.id),
+                                            SqlBuilder.and(NotaDynamicSqlSupport.status, SqlBuilder.equalTo(status))
+                                    )
                                     .where(idnotificacion, SqlBuilder.isNotEqualTo(NOTIFICATION_TERMINATED))
                                     .and(status, SqlBuilder.isTrue())
                                     .orderBy(fechaentregar.descending())
                     );
+
+            System.out.println(statementProvider.getSelectStatement());
 
             return mapper.selectManyCustomOrders(statementProvider);
         }
