@@ -35,7 +35,7 @@ public class AbonoAppImpl {
         }
     }
 
-    public Optional<Abono> selectPaymentStatus(int idNote) {
+    public Optional<Abono> selectNotePaymentStatus(int idNote) {
         try(SqlSession session = sqlSessionFactory.openSession()) {
             AbonoMapper mapper = session.getMapper(AbonoMapper.class);
 
@@ -50,6 +50,17 @@ public class AbonoAppImpl {
                     );
 
             return mapper.selectOne(statementProvider);
+        }
+    }
+
+    public int insertPayment(Abono payment) {
+        try(SqlSession session = sqlSessionFactory.openSession(true)) {
+            AbonoMapper mapper = session.getMapper(AbonoMapper.class);
+            payment.setStatus(true);
+            return mapper.insertSelective(payment);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
         }
     }
 }

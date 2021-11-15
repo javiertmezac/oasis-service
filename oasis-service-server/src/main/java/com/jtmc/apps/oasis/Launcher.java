@@ -29,6 +29,8 @@ import com.jtmc.apps.oasis.api.v1.notes.NotesApi;
 import com.jtmc.apps.oasis.api.v1.notes.NotesApiImpl;
 import com.jtmc.apps.oasis.api.v1.orders.OrdersApi;
 import com.jtmc.apps.oasis.api.v1.orders.OrdersApiImpl;
+import com.jtmc.apps.oasis.api.v1.payments.PaymentApi;
+import com.jtmc.apps.oasis.api.v1.payments.PaymentApiImpl;
 import com.jtmc.apps.oasis.infrastructure.guice.OasisMyBatisModule;
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.eclipse.jetty.server.Server;
@@ -62,6 +64,7 @@ public class Launcher {
             bind(EmployeeApi.class).to(EmployeeApiImpl.class);
             bind(NotesApi.class).to(NotesApiImpl.class);
             bind(BlockApi.class).to(BlockApiImpl.class);
+            bind(PaymentApi.class).to(PaymentApiImpl.class);
 
 
             Properties myProperties = new Properties();
@@ -100,7 +103,8 @@ public class Launcher {
                     injector.getInstance(OrdersApiImpl.class),
                     injector.getInstance(EmployeeApiImpl.class),
                     injector.getInstance(NotesApiImpl.class),
-                    injector.getInstance(BlockApiImpl.class)
+                    injector.getInstance(BlockApiImpl.class),
+                    injector.getInstance(PaymentApiImpl.class)
             );
         }
     }

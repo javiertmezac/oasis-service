@@ -102,4 +102,18 @@ public class OrdersAppImpl {
         }
     }
 
+    public int terminateOrder(Integer idpedido) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            PedidoMapper mapper = session.getMapper(PedidoMapper.class);
+
+            Pedido p = new Pedido();
+            p.setId(idpedido);
+            p.setIdnotificacion(NOTIFICATION_TERMINATED);
+
+            return mapper.updateByPrimaryKeySelective(p);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }
