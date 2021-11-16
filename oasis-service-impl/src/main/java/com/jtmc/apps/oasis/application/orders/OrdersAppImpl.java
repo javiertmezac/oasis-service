@@ -53,8 +53,6 @@ public class OrdersAppImpl {
                                     .orderBy(fechaentregar.descending())
                     );
 
-            System.out.println(statementProvider.getSelectStatement());
-
             return mapper.selectManyCustomOrders(statementProvider);
         }
     }
