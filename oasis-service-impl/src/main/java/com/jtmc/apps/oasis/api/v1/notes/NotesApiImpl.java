@@ -8,6 +8,7 @@ import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
 import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
 import com.jtmc.apps.oasis.domain.*;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.Opt;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -62,18 +63,21 @@ public class NotesApiImpl implements NotesApi {
     @Override
     public NotesResponse getNote(int noteId) {
         Optional<Nota> note = notesApp.selectOneNote(noteId);
-
         if(!note.isPresent()) {
             throw new WebApplicationException("Note not found", Response.Status.NOT_FOUND);
         }
+
         NotesResponse notesBaseResponse = converterToNotesResponse.apply(note.get());
 
-        Optional<Abono> paymentStatus = abonoApp.selectPaymentStatus(noteId);
+        Optional<Abono> paymentStatus = abonoApp.selectNotePaymentStatus(noteId);
         if (!paymentStatus.isPresent()) {
             notesBaseResponse.setPaid(false);
+            notesBaseResponse.setDebt(note.get().getTotal());
         } else {
-            boolean paid = (notesBaseResponse.getTotal() - paymentStatus.get().getCantidad()) == 0;
-            notesBaseResponse.setPaid(paid);
+            System.out.printf("NotePaymentStatus found for Note %s.%n", note.get().getNonota());
+            double remainingNoteTotal = notesBaseResponse.getTotal() - paymentStatus.get().getCantidad();
+            notesBaseResponse.setPaid(remainingNoteTotal == 0);
+            notesBaseResponse.setDebt(remainingNoteTotal);
         }
         return notesBaseResponse;
     }

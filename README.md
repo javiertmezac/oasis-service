@@ -16,9 +16,14 @@ https://mybatis.org/generator/quickstart.html
 ## docker sql_server
 `docker run -d --name sql_server -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Password123!' -p 1433:1433 mcr.microsoft.com/mssql/server:2019-latest`
 
+### Oasis Service DB
+- from version 0.6.1-beta DB was `DBCC CHECKIDENT ('Table_Name', RESEED, 0);`
+- bak name: SqlDb-OasisServiceV2_0.6.1-beta.bak
+- bak date: Nov 15, 2021
+
 ### Store Procedures
 For deployment: consider oasis-service-scripts folder...
-StoreProcedure NotesList and View_Abono are require for /api/v1/notes
+StoreProcedure NotesList and View_Abono are required for /api/v1/notes
 
 ## Build Command
 1. `mvn clean package`
