@@ -26,21 +26,18 @@ public class ClientsApiImpl implements ClientsApi {
     private ClientAppImpl clientApp;
 
     @Inject
-    private ClientsResponseConverter clientsResponseConverter;
-
-    @Inject
     private CustomClientsResponseConverter customClientsResponseConverter;
 
     @Override
     public ClientsResponseList getClients() {
 
-        List<Empresa> empresaList = clientApp.selectAllRows();
+        List<CustomClient> empresaList = clientApp.selectAllRows();
         if(empresaList == null || empresaList.size() == 0) {
             throw new WebApplicationException("Could not fetch EmpresaList", Response.Status.NOT_FOUND);
         }
 
         Stream<ClientsResponse> clientsResponseStream = empresaList
-                    .stream().map(c -> clientsResponseConverter.apply(c)
+                    .stream().map(c -> customClientsResponseConverter.apply(c)
         );
 
         ClientsResponseList responseList = new ClientsResponseList();
@@ -70,6 +67,7 @@ public class ClientsApiImpl implements ClientsApi {
         checkArgument(clientRequest.getClientId() == newClient, "Invalid ClientId");
         checkArgument(clientRequest.getClientPriceId() > 0, "Invalid ClientPriceId");
 
+
         Empresa client = new Empresa();
         client.setId(null);
         client.setNocliente(clientRequest.getClientCode());
@@ -79,12 +77,12 @@ public class ClientsApiImpl implements ClientsApi {
         client.setTelefono(clientRequest.getClientTel());
         client.setColonia(clientRequest.getClientNeighborhood());
         client.setCalle(clientRequest.getClientStreet());
-        client.setNoint(clientRequest.getClientNoInt());
-        client.setNoext(clientRequest.getClientNoOut());
-        client.setCpostal(clientRequest.getClientCp());
-        client.setFecharegistro(new Date(clientRequest.getClientInstantRegistration().getEpochSecond()));
+        client.setNoint(Integer.getInteger(clientRequest.getClientNoInt(), 0));
+        client.setNoext(Integer.getInteger(clientRequest.getClientNoOut(), 0));
+        client.setCpostal(Integer.getInteger(clientRequest.getClientCp(), 0));
+        client.setFecharegistro(clientRequest.getClientInstantRegistration());
         client.setIdprecio(clientRequest.getClientPriceId());
-        client.setSiglavado(new Date(clientRequest.getClientInstantNextClean().getEpochSecond()));
+        client.setSiglavado(clientRequest.getClientInstantNextClean());
 
         if (clientApp.insertClient(client) != 1) {
             System.out.println("Could not insert new Client Record");

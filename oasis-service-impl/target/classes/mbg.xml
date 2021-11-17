@@ -16,6 +16,8 @@
 
         <table tableName="Empresa" >
             <property name="virtualKeyColumns" value="id"/>
+            <columnOverride column="fecharegistro" javaType="java.time.Instant" />
+            <columnOverride column="siglavado" javaType="java.time.Instant" />
         </table>
         <table tableName="Users" >
             <property name="virtualKeyColumns" value="id"/>

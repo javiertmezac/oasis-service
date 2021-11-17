@@ -9,6 +9,7 @@ import com.jtmc.apps.oasis.infrastructure.EmpresaMapper;
 import com.jtmc.apps.oasis.infrastructure.PreciogranelDynamicSqlSupport;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.glassfish.jersey.internal.inject.Custom;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -24,16 +25,16 @@ public class ClientAppImpl {
     @Inject
     private SqlSessionFactory sqlSessionFactory;
 
-    public List<Empresa> selectAllRows() {
+    public List<CustomClient> selectAllRows() {
         try(SqlSession session = sqlSessionFactory.openSession()) {
-            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            CustomClientMapper mapper = session.getMapper(CustomClientMapper.class);
             SelectStatementProvider statementProvider = MyBatis3Utils
                     .select(addBasicColumns(), EmpresaDynamicSqlSupport.empresa,
                             c -> c.join(PreciogranelDynamicSqlSupport.preciogranel)
                                     .on(EmpresaDynamicSqlSupport.idprecio, SqlBuilder.equalTo(PreciogranelDynamicSqlSupport.id))
                                     .where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue())
                     );
-            return mapper.selectMany(statementProvider);
+            return mapper.selectManyCustomClient(statementProvider);
         }
     }
 

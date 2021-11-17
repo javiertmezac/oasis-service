@@ -9,9 +9,9 @@ public class ClientBase {
     private String clientTel;
     private String clientNeighborhood;
     private String clientStreet;
-    private Integer clientNoInt;
-    private Integer clientNoOut;
-    private Integer clientCp;
+    private String clientNoInt;
+    private String clientNoOut;
+    private String clientCp;
     private Byte clientPriceId;
 
     public Integer getClientId() {
@@ -78,35 +78,35 @@ public class ClientBase {
         this.clientStreet = clientStreet;
     }
 
-    public Integer getClientNoInt() {
-        return clientNoInt;
-    }
-
-    public void setClientNoInt(Integer clientNoInt) {
-        this.clientNoInt = clientNoInt;
-    }
-
-    public Integer getClientNoOut() {
-        return clientNoOut;
-    }
-
-    public void setClientNoOut(Integer clientNoOut) {
-        this.clientNoOut = clientNoOut;
-    }
-
-    public Integer getClientCp() {
-        return clientCp;
-    }
-
-    public void setClientCp(Integer clientCp) {
-        this.clientCp = clientCp;
-    }
-
     public Byte getClientPriceId() {
         return clientPriceId;
     }
 
     public void setClientPriceId(Byte clientPriceId) {
         this.clientPriceId = clientPriceId;
+    }
+
+    public String getClientNoInt() {
+        return clientNoInt;
+    }
+
+    public void setClientNoInt(String clientNoInt) {
+        this.clientNoInt = clientNoInt;
+    }
+
+    public String getClientNoOut() {
+        return clientNoOut;
+    }
+
+    public void setClientNoOut(String clientNoOut) {
+        this.clientNoOut = clientNoOut;
+    }
+
+    public String getClientCp() {
+        return clientCp;
+    }
+
+    public void setClientCp(String clientCp) {
+        this.clientCp = clientCp;
     }
 }
