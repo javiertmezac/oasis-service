@@ -58,4 +58,15 @@ public class ClientAppImpl {
 
         return BasicColumn.columnList(list.toArray(new BasicColumn[0]));
     }
+
+    public int insertClient(Empresa client) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            client.setStatus(true);
+            return mapper.insertSelective(client);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 }

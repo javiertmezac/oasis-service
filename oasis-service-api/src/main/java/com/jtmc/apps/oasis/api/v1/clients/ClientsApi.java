@@ -1,10 +1,8 @@
 package com.jtmc.apps.oasis.api.v1.clients;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/v1/clients")
 public interface ClientsApi {
@@ -18,4 +16,9 @@ public interface ClientsApi {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     ClientsResponse getClient(@PathParam("id") int clientId);
+
+    @POST
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response insertClient(ClientRequest clientRequest);
 }
