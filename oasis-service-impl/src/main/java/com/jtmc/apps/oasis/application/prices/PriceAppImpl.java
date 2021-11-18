@@ -20,4 +20,14 @@ public class PriceAppImpl {
             return mapper.select(SelectDSLCompleter.allRows());
         }
     }
+
+    public int insertPrice(Preciogranel price) {
+        try(SqlSession session = sqlSessionFactory.openSession(true)) {
+            PreciogranelMapper mapper = session.getMapper(PreciogranelMapper.class);
+            return mapper.insertSelective(price);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 }
