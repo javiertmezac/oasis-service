@@ -70,4 +70,14 @@ public class ClientAppImpl {
             throw ex;
         }
     }
+
+    public int updateSelective(Empresa client) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            return mapper.updateByPrimaryKeySelective(client);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 }

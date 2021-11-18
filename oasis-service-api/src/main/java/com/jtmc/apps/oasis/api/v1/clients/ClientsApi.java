@@ -21,4 +21,9 @@ public interface ClientsApi {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     Response insertClient(ClientRequest clientRequest);
+
+    @PUT
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response updateClient(ClientRequest clientRequest);
 }

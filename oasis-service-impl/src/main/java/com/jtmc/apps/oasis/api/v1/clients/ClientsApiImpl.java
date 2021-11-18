@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -77,12 +78,13 @@ public class ClientsApiImpl implements ClientsApi {
         client.setTelefono(clientRequest.getClientTel());
         client.setColonia(clientRequest.getClientNeighborhood());
         client.setCalle(clientRequest.getClientStreet());
-        client.setNoint(Integer.getInteger(clientRequest.getClientNoInt(), 0));
-        client.setNoext(Integer.getInteger(clientRequest.getClientNoOut(), 0));
-        client.setCpostal(Integer.getInteger(clientRequest.getClientCp(), 0));
+        client.setNoint(parseIntOrDefault(clientRequest.getClientNoInt(), 0));
+        client.setNoext(parseIntOrDefault(clientRequest.getClientNoOut(), 0));
+        client.setCpostal(parseIntOrDefault(clientRequest.getClientCp(), 0));
         client.setFecharegistro(clientRequest.getClientInstantRegistration());
         client.setIdprecio(clientRequest.getClientPriceId());
         client.setSiglavado(clientRequest.getClientInstantNextClean());
+
 
         if (clientApp.insertClient(client) != 1) {
             System.out.println("Could not insert new Client Record");
@@ -91,5 +93,51 @@ public class ClientsApiImpl implements ClientsApi {
 
         System.out.println("Empresa/Client inserted successfully");
         return Response.ok().build();
+    }
+
+    @Override
+    public Response updateClient(ClientRequest clientRequest) {
+        checkNotNull(clientRequest, "Invalid ClientRequest");
+        checkArgument(StringUtils.isNotBlank(clientRequest.getClientName()), "Invalid ClientName");
+        checkArgument(StringUtils.isNotBlank(clientRequest.getClientCode()),
+                "Invalid ClientCode / ClientTak");
+        checkArgument(StringUtils.isNotBlank(clientRequest.getClientRfc()), "Invalid ClientRfc");
+        int newClient = 0;
+        checkArgument(clientRequest.getClientId() != newClient, "Invalid ClientId");
+        checkArgument(clientRequest.getClientPriceId() > 0, "Invalid ClientPriceId");
+
+        Empresa client = new Empresa();
+        client.setId(clientRequest.getClientId());
+        client.setNocliente(clientRequest.getClientCode());
+        client.setNofactura(clientRequest.getClientInvoice());
+        client.setNombre(clientRequest.getClientName());
+        client.setRfc(clientRequest.getClientRfc());
+        client.setTelefono(clientRequest.getClientTel());
+        client.setColonia(clientRequest.getClientNeighborhood());
+        client.setCalle(clientRequest.getClientStreet());
+        client.setNoint(parseIntOrDefault(clientRequest.getClientNoInt(), 0));
+        client.setNoext(parseIntOrDefault(clientRequest.getClientNoOut(), 0));
+        client.setCpostal(parseIntOrDefault(clientRequest.getClientCp(), 0));
+        client.setIdprecio(clientRequest.getClientPriceId());
+        client.setSiglavado(clientRequest.getClientInstantNextClean());
+
+        if (clientApp.updateSelective(client) != 1) {
+            System.out.println("Could not update Client Record");
+            throw new WebApplicationException("Client/Empresa not updated", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+        System.out.println("Empresa/Client updated successfully");
+        return Response.ok().build();
+    }
+
+    private int parseIntOrDefault(String valueToParse, int defaultValue) {
+
+        int value = defaultValue;
+        try {
+            value = Integer.parseInt(valueToParse);
+            return value;
+        } catch (Exception ex) {
+            return value;
+        }
     }
 }
