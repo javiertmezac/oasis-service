@@ -16,4 +16,8 @@ public interface PriceApi {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     Response insertPrice(PriceRequest priceRequest);
+
+    @DELETE
+    @Path("/{id}")
+    Response deletePrice(@PathParam("id") int priceId);
 }

@@ -19,6 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.jtmc.apps.oasis.infrastructure.PedidoDynamicSqlSupport.idempresa;
+import static com.jtmc.apps.oasis.infrastructure.PedidoDynamicSqlSupport.status;
+
 public class ClientAppImpl {
 
     @Inject
@@ -88,6 +91,15 @@ public class ClientAppImpl {
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
+        }
+    }
+
+    public List<Empresa> selectAllRecordsWithPriceId(byte priceId) {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            return mapper.select(c -> c.where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue())
+                            .and(EmpresaDynamicSqlSupport.idprecio, SqlBuilder.isEqualTo(priceId))
+            );
         }
     }
 }

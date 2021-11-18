@@ -30,4 +30,14 @@ public class PriceAppImpl {
             throw ex;
         }
     }
+
+    public int deletePrice(byte priceId) {
+        try(SqlSession session = sqlSessionFactory.openSession(true)) {
+            PreciogranelMapper mapper = session.getMapper(PreciogranelMapper.class);
+            return mapper.deleteByPrimaryKey(priceId);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 }
