@@ -7,7 +7,7 @@
     <groupId>com.service.oasis</groupId>
     <artifactId>oasis-service</artifactId>
     <packaging>pom</packaging>
-    <version>0.7.0-beta</version>
+    <version>0.7.1-beta</version>
     <modules>
         <module>oasis-service-api</module>
         <module>oasis-service-server</module>

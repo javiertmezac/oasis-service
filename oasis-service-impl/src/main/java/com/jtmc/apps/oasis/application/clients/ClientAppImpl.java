@@ -9,7 +9,6 @@ import com.jtmc.apps.oasis.infrastructure.EmpresaMapper;
 import com.jtmc.apps.oasis.infrastructure.PreciogranelDynamicSqlSupport;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.glassfish.jersey.internal.inject.Custom;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -74,6 +73,17 @@ public class ClientAppImpl {
     public int updateSelective(Empresa client) {
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            return mapper.updateByPrimaryKeySelective(client);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    public int deleteMarkSelective(Empresa client) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            client.setStatus(false);
             return mapper.updateByPrimaryKeySelective(client);
         } catch (Exception ex) {
             ex.printStackTrace();

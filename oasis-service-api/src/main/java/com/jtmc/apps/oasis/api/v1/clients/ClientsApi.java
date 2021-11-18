@@ -26,4 +26,8 @@ public interface ClientsApi {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     Response updateClient(ClientRequest clientRequest);
+
+    @DELETE
+    @Path("/{id}")
+    Response deleteMarkClient(@PathParam("id") int clientId);
 }
