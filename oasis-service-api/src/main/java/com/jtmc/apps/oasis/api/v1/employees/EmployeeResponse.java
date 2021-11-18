@@ -8,6 +8,15 @@ public class EmployeeResponse extends EmployeeBase {
     private Date registration;
     private String block;
     private String blockNumber;
+    private int blockId;
+
+    public int getBlockId() {
+        return blockId;
+    }
+
+    public void setBlockId(int blockId) {
+        this.blockId = blockId;
+    }
 
     public String getNote() {
         return note;

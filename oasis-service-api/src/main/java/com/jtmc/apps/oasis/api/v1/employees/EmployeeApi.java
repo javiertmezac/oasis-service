@@ -30,5 +30,12 @@ public interface EmployeeApi {
     @DELETE
     @Path("/{id}")
     Response deleteMarkerEmployee(@PathParam("id") int employeeId);
+
+    @POST
+    @Path("/{employeeId}/blocks/{blockId}")
+    Response incrementNextBlockNumber(@PathParam("employeeId") int employeeId,
+                                      @PathParam("blockId") int blockId,
+                                      @QueryParam("currentBlockNumber") int currentBlockNumber,
+                                      @FormParam("description") String description);
 }
 

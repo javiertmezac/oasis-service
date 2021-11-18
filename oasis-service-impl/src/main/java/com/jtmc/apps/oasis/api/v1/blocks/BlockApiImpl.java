@@ -50,7 +50,7 @@ public class BlockApiImpl implements BlockApi {
 
         Bloque b = new Bloque();
         b.setIdchofer(blockRequest.getEmployeeId());
-        b.setLetra(blockRequest.getLetter().toUpperCase());
+        b.setLetra(blockRequest.getLetter().trim().toUpperCase());
         b.setNuminicial(blockRequest.getStartNumber());
         b.setNumfinal(blockRequest.getEndNumber());
         b.setSecuencia(blockRequest.getStartNumber());
@@ -63,5 +63,23 @@ public class BlockApiImpl implements BlockApi {
         System.out.printf("Block %s successfully created.%n", blockDetails);
 
         return Response.ok().build();
+    }
+
+    @Override
+    public BlockResponse getBlock(int blockId) {
+        checkArgument(blockId > 0, "Invalid BlockId");
+        Optional<Bloque> block = blockApp.selectOne(blockId);
+        if (!block.isPresent()) {
+            System.out.printf("Block %d not found.%n", blockId);
+            throw new WebApplicationException("Block Not Found", Response.Status.NOT_FOUND);
+        }
+
+        BlockResponse blockResponse = new BlockResponse();
+        blockResponse.setBlockId(block.get().getId());
+        blockResponse.setEndNumber(String.valueOf(block.get().getNumfinal()));
+        blockResponse.setStartNumber(String.valueOf(block.get().getNuminicial()));
+        blockResponse.setLetter(block.get().getLetra());
+        blockResponse.setNextBlockNumber(String.valueOf(block.get().getSecuencia()));
+        return blockResponse;
     }
 }

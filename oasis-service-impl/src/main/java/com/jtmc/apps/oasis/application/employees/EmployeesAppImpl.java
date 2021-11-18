@@ -39,6 +39,7 @@ public class EmployeesAppImpl {
             list.add(BloqueDynamicSqlSupport.secuencia.as("nextBlockNumber"));
             list.add(BloqueDynamicSqlSupport.numinicial.as("blockStartNumber"));
             list.add(BloqueDynamicSqlSupport.numfinal.as("blockEndNumber"));
+            list.add(BloqueDynamicSqlSupport.id.as("blockId"));
 
             SelectStatementProvider statementProvider = MyBatis3Utils
                     .select(BasicColumn.columnList(list.toArray(new BasicColumn[0])),

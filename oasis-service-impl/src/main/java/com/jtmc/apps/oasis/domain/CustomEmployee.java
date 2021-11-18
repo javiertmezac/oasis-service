@@ -6,6 +6,15 @@ public class CustomEmployee extends Trabajador {
     private Integer nextBlockNumber;
     private Integer blockStartNumber;
     private Integer blockEndNumber;
+    private Integer blockId;
+
+    public Integer getBlockId() {
+        return blockId;
+    }
+
+    public void setBlockId(Integer blockId) {
+        this.blockId = blockId;
+    }
 
     public Integer getBlockStartNumber() {
         return blockStartNumber;

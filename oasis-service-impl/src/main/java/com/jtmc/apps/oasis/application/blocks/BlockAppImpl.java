@@ -43,4 +43,12 @@ public class BlockAppImpl {
             throw e;
         }
     }
+
+    public Optional<Bloque> selectOne(int blockId) {
+        try(SqlSession session = sqlSessionFactory.openSession()) {
+            BloqueMapper mapper = session.getMapper(BloqueMapper.class);
+            return mapper.selectOne(c -> c.where(BloqueDynamicSqlSupport.id, SqlBuilder.isEqualTo(blockId))
+                    .and(BloqueDynamicSqlSupport.status, SqlBuilder.isTrue()));
+        }
+    }
 }

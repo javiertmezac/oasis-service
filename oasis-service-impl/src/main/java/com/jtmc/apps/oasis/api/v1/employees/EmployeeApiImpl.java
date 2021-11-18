@@ -3,7 +3,9 @@ package com.jtmc.apps.oasis.api.v1.employees;
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsResponse;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsResponseList;
+import com.jtmc.apps.oasis.application.blocks.BlockAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
+import com.jtmc.apps.oasis.domain.Bloque;
 import com.jtmc.apps.oasis.domain.CustomEmployee;
 import com.jtmc.apps.oasis.domain.Trabajador;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +27,9 @@ public class EmployeeApiImpl implements  EmployeeApi {
 
     @Inject
     private EmployeesAppImpl employeesApp;
+
+    @Inject
+    private BlockAppImpl blockApp;
 
     @Inject
     private EmployeeResponseConverter employeeResponseConverter;
@@ -121,6 +126,48 @@ public class EmployeeApiImpl implements  EmployeeApi {
                     Response.Status.INTERNAL_SERVER_ERROR);
         }
         System.out.printf("Employee %d was delete marked successfully.%n", employeeId);
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response incrementNextBlockNumber(int employeeId, int blockId, int currentBlockNumber, String description) {
+        checkArgument(employeeId > 0, "Invalid EmployeeId");
+        checkArgument(blockId > 0, "Invalid BlockId");
+        checkArgument(StringUtils.isNotBlank(description), "Invalid description");
+
+        Optional<Trabajador> employee = employeesApp.selectOne(employeeId);
+        if(!employee.isPresent()) {
+            throw new WebApplicationException("Employee not found", Response.Status.NOT_FOUND);
+        }
+
+        Optional<Bloque> block = blockApp.selectOne(blockId);
+        if(!block.isPresent()) {
+            throw new WebApplicationException("Block not found", Response.Status.NOT_FOUND);
+        }
+
+        if(block.get().getSecuencia() != currentBlockNumber) {
+            System.out.println("Current Block Number does not match to value in DB");
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
+        System.out.println("About to increment blockNumber");
+        int newNumber = currentBlockNumber + 1;
+        System.out.printf("CurrentBlockNumber: %d, NewBlockNumber: %d.%n", currentBlockNumber, newNumber);
+
+        Bloque b = block.get();
+        b.setSecuencia(newNumber);
+        if (newNumber > block.get().getNumfinal()) {
+            System.out.printf("BlockId #%s has no more available notes. It will be terminated.%n", block.get().getId());
+            b.setStatus(false);
+        }
+
+        if(blockApp.updateNextNumber(b) != 1) {
+            System.out.printf("Not able to set newNumber %d for block %d.%n", newNumber, blockId);
+            throw new WebApplicationException("Not able to set newBlockNumber", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+        //todo: update serieError
+        System.out.println("Block Number Updated!");
         return Response.ok().build();
     }
 }
