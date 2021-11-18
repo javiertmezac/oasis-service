@@ -24,16 +24,16 @@ public class ClientAppImpl {
     @Inject
     private SqlSessionFactory sqlSessionFactory;
 
-    public List<Empresa> selectAllRows() {
+    public List<CustomClient> selectAllRows() {
         try(SqlSession session = sqlSessionFactory.openSession()) {
-            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            CustomClientMapper mapper = session.getMapper(CustomClientMapper.class);
             SelectStatementProvider statementProvider = MyBatis3Utils
                     .select(addBasicColumns(), EmpresaDynamicSqlSupport.empresa,
                             c -> c.join(PreciogranelDynamicSqlSupport.preciogranel)
                                     .on(EmpresaDynamicSqlSupport.idprecio, SqlBuilder.equalTo(PreciogranelDynamicSqlSupport.id))
                                     .where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue())
                     );
-            return mapper.selectMany(statementProvider);
+            return mapper.selectManyCustomClient(statementProvider);
         }
     }
 
@@ -57,5 +57,37 @@ public class ClientAppImpl {
         list.add(PreciogranelDynamicSqlSupport.precio.as("price"));
 
         return BasicColumn.columnList(list.toArray(new BasicColumn[0]));
+    }
+
+    public int insertClient(Empresa client) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            client.setStatus(true);
+            return mapper.insertSelective(client);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    public int updateSelective(Empresa client) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            return mapper.updateByPrimaryKeySelective(client);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    public int deleteMarkSelective(Empresa client) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            client.setStatus(false);
+            return mapper.updateByPrimaryKeySelective(client);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 }

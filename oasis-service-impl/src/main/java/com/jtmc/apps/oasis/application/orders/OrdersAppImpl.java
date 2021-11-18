@@ -121,4 +121,13 @@ public class OrdersAppImpl {
             throw e;
         }
     }
+
+    public List<Pedido> selectActiveOrderForClient(int clientId) {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PedidoMapper mapper = session.getMapper(PedidoMapper.class);
+            return mapper.select(c -> c.where(status, SqlBuilder.isTrue())
+                    .and(idempresa, SqlBuilder.isEqualTo(clientId))
+            );
+        }
+    }
 }

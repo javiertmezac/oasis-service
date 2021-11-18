@@ -2,14 +2,12 @@ package com.jtmc.apps.oasis.infrastructure;
 
 import com.jtmc.apps.oasis.domain.CustomClient;
 import com.jtmc.apps.oasis.domain.Empresa;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -34,5 +32,11 @@ public interface CustomClientMapper extends EmpresaMapper {
             @Result(column="precio", property="precio", jdbcType=JdbcType.DECIMAL),
             @Result(column="sigLavado", property="siglavado", jdbcType=JdbcType.TIMESTAMP)
     })
+    List<CustomClient> selectManyCustomClient(SelectStatementProvider selectStatement);
+
+    @SelectProvider(type= SqlProviderAdapter.class, method="select")
+    @ResultMap("CustomEmpresaResult")
     Optional<CustomClient> selectOneCustomClient(SelectStatementProvider selectStatement);
+
+
 }
