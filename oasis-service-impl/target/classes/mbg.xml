@@ -51,5 +51,9 @@
             <property name="virtualKeyColumns" value="id"/>
             <columnOverride column="fecharegistro" javaType="java.time.Instant" />
         </table>
+        <table tableName="SerieError" >
+            <property name="virtualKeyColumns" value="id"/>
+            <columnOverride column="fecharegistro" javaType="java.time.Instant" />
+        </table>
     </context>
 </generatorConfiguration>

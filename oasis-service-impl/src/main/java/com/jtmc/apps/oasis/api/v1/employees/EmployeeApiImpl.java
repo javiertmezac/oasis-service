@@ -1,15 +1,14 @@
 package com.jtmc.apps.oasis.api.v1.employees;
 
 import com.google.inject.Inject;
-import com.jtmc.apps.oasis.api.v1.clients.ClientsResponse;
-import com.jtmc.apps.oasis.api.v1.clients.ClientsResponseList;
+import com.jtmc.apps.oasis.application.blockerror.BlockErrorAppImpl;
 import com.jtmc.apps.oasis.application.blocks.BlockAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
 import com.jtmc.apps.oasis.domain.Bloque;
 import com.jtmc.apps.oasis.domain.CustomEmployee;
+import com.jtmc.apps.oasis.domain.Serieerror;
 import com.jtmc.apps.oasis.domain.Trabajador;
 import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.internal.inject.Custom;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -30,6 +29,9 @@ public class EmployeeApiImpl implements  EmployeeApi {
 
     @Inject
     private BlockAppImpl blockApp;
+
+    @Inject
+    private BlockErrorAppImpl blockErrorApp;
 
     @Inject
     private EmployeeResponseConverter employeeResponseConverter;
@@ -166,7 +168,19 @@ public class EmployeeApiImpl implements  EmployeeApi {
             throw new WebApplicationException("Not able to set newBlockNumber", Response.Status.INTERNAL_SERVER_ERROR);
         }
 
-        //todo: update serieError
+        System.out.printf("About to set SerieError for related to block #%d%n", blockId);
+        Serieerror error = new Serieerror();
+        error.setId(null);
+        error.setFecharegistro(Instant.now());
+        error.setNonota(String.format("%s %d-%d", block.get().getLetra().trim(),
+                block.get().getNuminicial(), block.get().getNumfinal()));
+        error.setIdchofer(employeeId);
+        error.setObservaciones(description);
+        if(blockErrorApp.insertBlockError(error) != 1) {
+            System.out.printf("could not set SerieError for block %d", block.get().getId());
+            throw new WebApplicationException("Error inserting SerieError", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
         System.out.println("Block Number Updated!");
         return Response.ok().build();
     }
