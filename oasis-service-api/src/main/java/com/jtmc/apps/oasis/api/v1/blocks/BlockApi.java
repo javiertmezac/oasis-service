@@ -1,8 +1,6 @@
 package com.jtmc.apps.oasis.api.v1.blocks;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -13,4 +11,9 @@ public interface BlockApi {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     Response createBlock(BlockRequest blockRequest);
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    BlockResponse getBlock(@PathParam("id") int blockId);
 }

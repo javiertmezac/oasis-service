@@ -1,7 +1,6 @@
 package com.jtmc.apps.oasis.infrastructure;
 
 import com.jtmc.apps.oasis.domain.CustomEmployee;
-import com.jtmc.apps.oasis.domain.Trabajador;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
@@ -28,7 +27,8 @@ public interface CustomEmployeeMapper extends TrabajadorMapper {
             @Result(column="nextBlockNumber", property="nextBlockNumber", jdbcType=JdbcType.INTEGER),
             @Result(column="blockStartNumber", property="blockStartNumber", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="blockEndNumber", property="blockEndNumber", jdbcType=JdbcType.INTEGER, id=true),
-            @Result(column="letter", property="letter", jdbcType=JdbcType.NCHAR, id=true)
+            @Result(column="letter", property="letter", jdbcType=JdbcType.NCHAR, id=true),
+            @Result(column="blockId", property="blockId", jdbcType=JdbcType.INTEGER, id=true)
     })
     List<CustomEmployee> selectManyCustomEmployees(SelectStatementProvider selectStatement);
 

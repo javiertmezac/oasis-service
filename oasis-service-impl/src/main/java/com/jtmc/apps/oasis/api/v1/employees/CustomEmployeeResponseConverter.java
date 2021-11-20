@@ -2,7 +2,6 @@ package com.jtmc.apps.oasis.api.v1.employees;
 
 import com.jtmc.apps.oasis.domain.CustomEmployee;
 
-import java.util.Date;
 import java.util.function.Function;
 
 public class CustomEmployeeResponseConverter implements Function<CustomEmployee, EmployeeResponse> {
@@ -23,6 +22,7 @@ public class CustomEmployeeResponseConverter implements Function<CustomEmployee,
                     trabajador.getBlockStartNumber(), trabajador.getBlockEndNumber())
             );
             response.setNote(String.format("%s - %s", trabajador.getLetter(), trabajador.getNextBlockNumber()));
+            response.setBlockId(trabajador.getBlockId());
         } else {
             String statusText = "n/a";
             response.setNote(statusText);
