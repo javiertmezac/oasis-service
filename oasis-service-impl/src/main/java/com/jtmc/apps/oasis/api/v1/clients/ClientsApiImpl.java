@@ -64,9 +64,6 @@ public class ClientsApiImpl implements ClientsApi {
     public Response insertClient(ClientRequest clientRequest) {
         checkNotNull(clientRequest, "Invalid ClientRequest");
         checkArgument(StringUtils.isNotBlank(clientRequest.getClientName()), "Invalid ClientName");
-        checkArgument(StringUtils.isNotBlank(clientRequest.getClientCode()),
-                "Invalid ClientCode / ClientTak");
-        checkArgument(StringUtils.isNotBlank(clientRequest.getClientRfc()), "Invalid ClientRfc");
         int newClient = 0;
         checkArgument(clientRequest.getClientId() == newClient, "Invalid ClientId");
         checkArgument(clientRequest.getClientPriceId() > 0, "Invalid ClientPriceId");
@@ -81,9 +78,9 @@ public class ClientsApiImpl implements ClientsApi {
         client.setTelefono(clientRequest.getClientTel());
         client.setColonia(clientRequest.getClientNeighborhood());
         client.setCalle(clientRequest.getClientStreet());
-        client.setNoint(parseIntOrDefault(clientRequest.getClientNoInt(), 0));
-        client.setNoext(parseIntOrDefault(clientRequest.getClientNoOut(), 0));
-        client.setCpostal(parseIntOrDefault(clientRequest.getClientCp(), 0));
+        client.setNoint(clientRequest.getClientNoInt());
+        client.setNoext(clientRequest.getClientNoOut());
+        client.setCpostal(clientRequest.getClientCp());
         client.setFecharegistro(clientRequest.getClientInstantRegistration());
         client.setIdprecio(clientRequest.getClientPriceId());
         client.setSiglavado(clientRequest.getClientInstantNextClean());
@@ -102,9 +99,6 @@ public class ClientsApiImpl implements ClientsApi {
     public Response updateClient(ClientRequest clientRequest) {
         checkNotNull(clientRequest, "Invalid ClientRequest");
         checkArgument(StringUtils.isNotBlank(clientRequest.getClientName()), "Invalid ClientName");
-        checkArgument(StringUtils.isNotBlank(clientRequest.getClientCode()),
-                "Invalid ClientCode / ClientTak");
-        checkArgument(StringUtils.isNotBlank(clientRequest.getClientRfc()), "Invalid ClientRfc");
         int newClient = 0;
         checkArgument(clientRequest.getClientId() != newClient, "Invalid ClientId");
         checkArgument(clientRequest.getClientPriceId() > 0, "Invalid ClientPriceId");
@@ -118,9 +112,9 @@ public class ClientsApiImpl implements ClientsApi {
         client.setTelefono(clientRequest.getClientTel());
         client.setColonia(clientRequest.getClientNeighborhood());
         client.setCalle(clientRequest.getClientStreet());
-        client.setNoint(parseIntOrDefault(clientRequest.getClientNoInt(), 0));
-        client.setNoext(parseIntOrDefault(clientRequest.getClientNoOut(), 0));
-        client.setCpostal(parseIntOrDefault(clientRequest.getClientCp(), 0));
+        client.setNoint(clientRequest.getClientNoInt());
+        client.setNoext(clientRequest.getClientNoOut());
+        client.setCpostal(clientRequest.getClientCp());
         client.setIdprecio(clientRequest.getClientPriceId());
         client.setSiglavado(clientRequest.getClientInstantNextClean());
 
@@ -131,17 +125,6 @@ public class ClientsApiImpl implements ClientsApi {
 
         System.out.println("Empresa/Client updated successfully");
         return Response.ok().build();
-    }
-
-    private int parseIntOrDefault(String valueToParse, int defaultValue) {
-
-        int value = defaultValue;
-        try {
-            value = Integer.parseInt(valueToParse);
-            return value;
-        } catch (Exception ex) {
-            return value;
-        }
     }
 
     @Override
