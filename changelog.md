@@ -1,8 +1,16 @@
 # Oasis Service (v2)
 
+## 1.1.0
+Release Date: -
+### Features
+API
+- Added Update Order API (PUT)
+
+DB - Trabajador Column
+- increased "nombre" length
+
 ## 1.0.0
 Release Date: Nov 20, 2021
-
 ### Features
 APIs
   - Health-Check
