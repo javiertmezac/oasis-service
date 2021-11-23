@@ -123,7 +123,7 @@ public class ClientsApiImpl implements ClientsApi {
             throw new WebApplicationException("Client/Empresa not updated", Response.Status.INTERNAL_SERVER_ERROR);
         }
 
-        System.out.println("Empresa/Client updated successfully");
+        System.out.printf("Empresa/Client #%s updated successfully", clientRequest.getClientId());
         return Response.ok().build();
     }
 
