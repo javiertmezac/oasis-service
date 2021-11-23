@@ -97,6 +97,16 @@ public class OrdersAppImpl {
         }
     }
 
+    public int updateOrder(Pedido p) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            PedidoMapper mapper = session.getMapper(PedidoMapper.class);
+            return mapper.updateByPrimaryKeySelective(p);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
     public int deleteMark(Pedido p) {
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             PedidoMapper mapper = session.getMapper(PedidoMapper.class);

@@ -23,6 +23,11 @@ public interface OrdersApi {
     @Produces(MediaType.APPLICATION_JSON)
     Response createOrder(OrderRequest orderRequest);
 
+    @PUT
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response updateOrder(OrderRequest orderRequest);
+
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
