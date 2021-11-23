@@ -64,9 +64,6 @@ public class ClientsApiImpl implements ClientsApi {
     public Response insertClient(ClientRequest clientRequest) {
         checkNotNull(clientRequest, "Invalid ClientRequest");
         checkArgument(StringUtils.isNotBlank(clientRequest.getClientName()), "Invalid ClientName");
-//        checkArgument(StringUtils.isNotBlank(clientRequest.getClientCode()),
-//                "Invalid ClientCode / ClientTak");
-//        checkArgument(StringUtils.isNotBlank(clientRequest.getClientRfc()), "Invalid ClientRfc");
         int newClient = 0;
         checkArgument(clientRequest.getClientId() == newClient, "Invalid ClientId");
         checkArgument(clientRequest.getClientPriceId() > 0, "Invalid ClientPriceId");
@@ -102,9 +99,6 @@ public class ClientsApiImpl implements ClientsApi {
     public Response updateClient(ClientRequest clientRequest) {
         checkNotNull(clientRequest, "Invalid ClientRequest");
         checkArgument(StringUtils.isNotBlank(clientRequest.getClientName()), "Invalid ClientName");
-//        checkArgument(StringUtils.isNotBlank(clientRequest.getClientCode()),
-//                "Invalid ClientCode / ClientTak");
-//        checkArgument(StringUtils.isNotBlank(clientRequest.getClientRfc()), "Invalid ClientRfc");
         int newClient = 0;
         checkArgument(clientRequest.getClientId() != newClient, "Invalid ClientId");
         checkArgument(clientRequest.getClientPriceId() > 0, "Invalid ClientPriceId");
