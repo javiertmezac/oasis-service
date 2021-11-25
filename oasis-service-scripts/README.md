@@ -1,4 +1,10 @@
 
+### version 1.1.0
+updated Trabajador
+increased name lenght
+- changed column
+  - nombre nvarchar(40)
+
 ### version 1.0.1
 updated Empresa DB
 it looks like not null values are ignored (pending for verification)

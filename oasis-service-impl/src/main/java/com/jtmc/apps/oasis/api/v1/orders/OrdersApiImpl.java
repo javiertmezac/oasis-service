@@ -106,6 +106,38 @@ public class OrdersApiImpl implements OrdersApi {
     }
 
     @Override
+    public Response updateOrder(OrderRequest orderRequest) {
+        checkNotNull(orderRequest, "OrderRequest object is null");
+
+        int newOrder = 0;
+        checkArgument(orderRequest.getOrderId() != null && orderRequest.getOrderId() > newOrder,
+                "Invalid OrderId");
+        checkArgument(orderRequest.getEmployeeId() > 0,"Invalid EmployeeId");
+        checkArgument(orderRequest.getClientId() > 0,"Invalid ClientId");
+        checkNotNull(orderRequest.getRegistrationDate(), "Provide a registrationDate");
+        checkNotNull(orderRequest.getDeliveryDate(), "Provide a deliveryDate");
+        checkArgument(orderRequest.getNotification() > 0, "Invalid Notification");
+        checkArgument(orderRequest.getPriority() > 0, "Invalid Priority");
+
+        Optional<CustomClient> client = clientApp.selectOne(orderRequest.getClientId());
+        if(!client.isPresent()) {
+            throw new WebApplicationException("Client not Found", Response.Status.NOT_FOUND);
+        }
+
+        Optional<Trabajador> employee = employeesApp.selectOne(orderRequest.getEmployeeId());
+        if(!employee.isPresent()) {
+            throw new WebApplicationException("Employee not Found", Response.Status.NOT_FOUND);
+        }
+
+        if(ordersApp.updateOrder(ordersConverter.apply(orderRequest)) != 1) {
+            System.out.printf("Not able to update Order #%s.%n", orderRequest.getOrderId());
+            throw new WebApplicationException("Not able to update Order.", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.printf("Order #%s updated successfully.%n", orderRequest.getOrderId());
+        return Response.ok().build();
+    }
+
+    @Override
     public Response deleteMarkerOrder(int orderId) {
         checkArgument(orderId > 0, "Invalid orderId");
 
