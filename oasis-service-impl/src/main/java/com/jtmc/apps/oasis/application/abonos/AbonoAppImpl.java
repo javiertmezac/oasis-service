@@ -63,4 +63,12 @@ public class AbonoAppImpl {
             throw ex;
         }
     }
+
+    public List<Abono> selectPaymentsFromNote(int noteId) {
+        try(SqlSession session = sqlSessionFactory.openSession()) {
+            AbonoMapper mapper = session.getMapper(AbonoMapper.class);
+            return mapper.select(c -> c.where(AbonoDynamicSqlSupport.idnota, SqlBuilder.isEqualTo(noteId))
+                    .and(AbonoDynamicSqlSupport.status, SqlBuilder.isTrue()));
+        }
+    }
 }
