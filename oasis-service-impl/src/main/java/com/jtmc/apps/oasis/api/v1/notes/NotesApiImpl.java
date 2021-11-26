@@ -2,6 +2,7 @@ package com.jtmc.apps.oasis.api.v1.notes;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.jtmc.apps.oasis.api.v1.payments.PaymentResponse;
 import com.jtmc.apps.oasis.application.abonos.AbonoAppImpl;
 import com.jtmc.apps.oasis.application.blocks.BlockAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
@@ -12,6 +13,7 @@ import org.checkerframework.checker.nullness.Opt;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,9 +37,6 @@ public class NotesApiImpl implements NotesApi {
     private BlockAppImpl blockApp;
 
     @Inject
-    private NotesResponseConverter notesResponseConverter;
-
-    @Inject
     private NoteConverterToNotesResponse converterToNotesResponse;
 
     @Inject
@@ -53,7 +52,7 @@ public class NotesApiImpl implements NotesApi {
         }
 
         Stream<NotesResponse> noteResponseStream =
-                noteList.stream().map(n -> notesResponseConverter.apply(n));
+                noteList.stream().map(n -> converterToNotesResponse.apply(n));
 
         NotesResponseList response = new NotesResponseList();
         response.setNotesResponse(noteResponseStream.collect(Collectors.toList()));
@@ -62,7 +61,7 @@ public class NotesApiImpl implements NotesApi {
 
     @Override
     public NotesResponse getNote(int noteId) {
-        Optional<Nota> note = notesApp.selectOneNote(noteId);
+        Optional<CustomNote> note = notesApp.selectOneNote(noteId);
         if(!note.isPresent()) {
             throw new WebApplicationException("Note not found", Response.Status.NOT_FOUND);
         }
@@ -141,5 +140,28 @@ public class NotesApiImpl implements NotesApi {
         System.out.printf("BlockId #%s update correctly.%n", nextBlock.getId());
 
         return Response.ok().build();
+    }
+
+    @Override
+    public NotePaymentResponseList fetchPaymentsFromNote(int noteId) {
+        checkArgument(noteId > 0, "Invalid noteId");
+        Optional<CustomNote> note = notesApp.selectOneNote(noteId);
+        if(!note.isPresent()) {
+            System.out.printf("Note #%s not found", noteId);
+            throw new WebApplicationException("Note not found", Response.Status.NOT_FOUND);
+        }
+
+        NotePaymentResponseList responseList = new NotePaymentResponseList();
+        List<CustomPayment> payments = abonoApp.selectPaymentsFromNote(noteId);
+        Stream<PaymentResponse> paymentResponseStream = payments.stream().map(x -> {
+            PaymentResponse paymentResponse = new PaymentResponse();
+            paymentResponse.setPayment(x.getCantidad());
+            paymentResponse.setEmployeeName(x.getEmployeeName());
+            paymentResponse.setRegistration(new Date(x.getFecharegistro().toEpochMilli()));
+            return paymentResponse;
+        });
+
+        responseList.setNotePayments(paymentResponseStream.collect(Collectors.toList()));
+        return responseList;
     }
 }

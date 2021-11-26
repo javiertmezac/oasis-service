@@ -2,6 +2,7 @@ package com.jtmc.apps.oasis.application.abonos;
 
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.domain.Abono;
+import com.jtmc.apps.oasis.domain.CustomPayment;
 import com.jtmc.apps.oasis.infrastructure.*;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -10,6 +11,8 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +64,23 @@ public class AbonoAppImpl {
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
+        }
+    }
+
+    public List<CustomPayment> selectPaymentsFromNote(int noteId) {
+        try(SqlSession session = sqlSessionFactory.openSession()) {
+            CustomPaymentMapper mapper = session.getMapper(CustomPaymentMapper.class);
+
+            ArrayList<BasicColumn> list = new ArrayList<>(Arrays.asList(AbonoMapper.selectList));
+            list.add(TrabajadorDynamicSqlSupport.nombre.as("employeeName"));
+
+            SelectStatementProvider statementProvider = MyBatis3Utils.select(BasicColumn.columnList(list.toArray(new BasicColumn[0])),
+                    AbonoDynamicSqlSupport.abono, c -> c.join(TrabajadorDynamicSqlSupport.trabajador)
+                            .on(TrabajadorDynamicSqlSupport.id, SqlBuilder.equalTo(AbonoDynamicSqlSupport.idchofer))
+                            .where(AbonoDynamicSqlSupport.idnota, SqlBuilder.isEqualTo(noteId))
+                    .and(AbonoDynamicSqlSupport.status, SqlBuilder.isTrue()));
+
+            return mapper.selectManyCustomPayments(statementProvider);
         }
     }
 }
