@@ -37,9 +37,6 @@ public class NotesApiImpl implements NotesApi {
     private BlockAppImpl blockApp;
 
     @Inject
-    private NotesResponseConverter notesResponseConverter;
-
-    @Inject
     private NoteConverterToNotesResponse converterToNotesResponse;
 
     @Inject
@@ -55,7 +52,7 @@ public class NotesApiImpl implements NotesApi {
         }
 
         Stream<NotesResponse> noteResponseStream =
-                noteList.stream().map(n -> notesResponseConverter.apply(n));
+                noteList.stream().map(n -> converterToNotesResponse.apply(n));
 
         NotesResponseList response = new NotesResponseList();
         response.setNotesResponse(noteResponseStream.collect(Collectors.toList()));
@@ -64,7 +61,7 @@ public class NotesApiImpl implements NotesApi {
 
     @Override
     public NotesResponse getNote(int noteId) {
-        Optional<Nota> note = notesApp.selectOneNote(noteId);
+        Optional<CustomNote> note = notesApp.selectOneNote(noteId);
         if(!note.isPresent()) {
             throw new WebApplicationException("Note not found", Response.Status.NOT_FOUND);
         }
@@ -148,7 +145,7 @@ public class NotesApiImpl implements NotesApi {
     @Override
     public NotePaymentResponseList fetchPaymentsFromNote(int noteId) {
         checkArgument(noteId > 0, "Invalid noteId");
-        Optional<Nota> note = notesApp.selectOneNote(noteId);
+        Optional<CustomNote> note = notesApp.selectOneNote(noteId);
         if(!note.isPresent()) {
             System.out.printf("Note #%s not found", noteId);
             throw new WebApplicationException("Note not found", Response.Status.NOT_FOUND);

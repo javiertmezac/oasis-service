@@ -6,6 +6,7 @@ import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
 import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
 import com.jtmc.apps.oasis.application.orders.OrdersAppImpl;
 import com.jtmc.apps.oasis.domain.Abono;
+import com.jtmc.apps.oasis.domain.CustomNote;
 import com.jtmc.apps.oasis.domain.Nota;
 import com.jtmc.apps.oasis.domain.Trabajador;
 
@@ -51,7 +52,7 @@ public class PaymentApiImpl implements PaymentApi {
             throw new WebApplicationException("Employee Not Found", Response.Status.NOT_FOUND);
         }
 
-        Optional<Nota> note = notesApp.selectOneNote(paymentRequest.getNoteId());
+        Optional<CustomNote> note = notesApp.selectOneNote(paymentRequest.getNoteId());
         if(!note.isPresent()) {
             System.out.printf("Note $%d not found.%n", paymentRequest.getNoteId());
             throw new WebApplicationException("Note Not Found", Response.Status.NOT_FOUND);
