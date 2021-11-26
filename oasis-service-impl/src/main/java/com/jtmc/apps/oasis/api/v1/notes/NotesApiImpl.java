@@ -155,11 +155,11 @@ public class NotesApiImpl implements NotesApi {
         }
 
         NotePaymentResponseList responseList = new NotePaymentResponseList();
-        List<Abono> payments = abonoApp.selectPaymentsFromNote(noteId);
+        List<CustomPayment> payments = abonoApp.selectPaymentsFromNote(noteId);
         Stream<PaymentResponse> paymentResponseStream = payments.stream().map(x -> {
             PaymentResponse paymentResponse = new PaymentResponse();
             paymentResponse.setPayment(x.getCantidad());
-            paymentResponse.setEmployeeName(String.valueOf(x.getIdchofer()));
+            paymentResponse.setEmployeeName(x.getEmployeeName());
             paymentResponse.setRegistration(new Date(x.getFecharegistro().toEpochMilli()));
             return paymentResponse;
         });
