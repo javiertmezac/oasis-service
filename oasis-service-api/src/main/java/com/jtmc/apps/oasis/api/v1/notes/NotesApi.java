@@ -22,6 +22,11 @@ public interface NotesApi {
     @Consumes(MediaType.APPLICATION_JSON)
     Response createNote(NotesRequest notesRequest);
 
+    @PUT
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response updateNote(NotesRequest notesRequest);
+
     @GET
     @Path("/{noteId}/payments")
     @Produces(MediaType.APPLICATION_JSON)

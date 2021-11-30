@@ -6,12 +6,9 @@ import com.jtmc.apps.oasis.domain.Nota;
 import com.jtmc.apps.oasis.infrastructure.CustomNoteMapper;
 import com.jtmc.apps.oasis.infrastructure.NotaDynamicSqlSupport;
 import com.jtmc.apps.oasis.infrastructure.NotaMapper;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +48,16 @@ public class NotesAppImpl {
             NotaMapper mapper = session.getMapper(NotaMapper.class);
             note.setStatus(true);
             return mapper.insertSelective(note);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public int updateNote(Nota note) {
+        try(SqlSession session = sqlSessionFactory.openSession(true)) {
+            NotaMapper mapper = session.getMapper(NotaMapper.class);
+            return mapper.updateByPrimaryKeySelective(note);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
