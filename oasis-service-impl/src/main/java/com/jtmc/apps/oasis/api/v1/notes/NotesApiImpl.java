@@ -94,6 +94,8 @@ public class NotesApiImpl implements NotesApi {
                 "FinalData should be greater than InitialData");
         checkArgument(StringUtils.isNotBlank(notesRequest.getNote()), "Note number is not valid");
 
+        calculatePaymentForNote(notesRequest);
+
         Optional<Nota> note = notesApp.selectNoteByOrderId(notesRequest.getOrderId());
         if (note.isPresent()) {
             System.out.printf("OrderId %s already has a NOTE linked to it. NoteId: %s%n", notesRequest.getOrderId(), note.get().getId());
@@ -140,6 +142,9 @@ public class NotesApiImpl implements NotesApi {
         return Response.ok().build();
     }
 
+    //todo: do not accept discount_value to be greater than totalData
+    //consider scenarios where there are payments already done.. (what is the expected flow in this scenario)
+
     @Override
     public Response updateNote(NotesRequest notesRequest) {
         checkNotNull(notesRequest, "NotesRequest object is null");
@@ -178,6 +183,8 @@ public class NotesApiImpl implements NotesApi {
             throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
         }
 
+        calculatePaymentForNote(notesRequest);
+
         System.out.printf("Proceeding to update note %s%n", notesRequest.getNote());
         int result = notesApp.updateNote(notesConverter.apply(notesRequest));
         int validState = 1;
@@ -186,6 +193,24 @@ public class NotesApiImpl implements NotesApi {
         }
         System.out.println("Note updated successfully");
         return Response.ok().build();
+    }
+
+    private void calculatePaymentForNote(NotesRequest notesRequest) {
+
+        int discount = notesRequest.getDiscount() != null ? notesRequest.getDiscount() : 0;
+        long liters = notesRequest.getFinalData() - (notesRequest.getInitialData() + discount);
+        double paymentTotal = liters * notesRequest.getPrice().doubleValue();
+        if(notesRequest.getLiters() != liters &&
+                notesRequest.getTotal() != paymentTotal) {
+            System.out.println("Note Payment details are not the same!");
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
+        long realLiters = notesRequest.getFinalData() - notesRequest.getInitialData();
+        if(notesRequest.getDiscount() != null && (notesRequest.getDiscount() > realLiters)) {
+            System.out.printf("Discount should not be greater than totalLiters. note %s on update operation.%n", notesRequest.getNoteId());
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
     }
 
     @Override
