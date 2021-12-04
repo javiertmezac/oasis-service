@@ -3,6 +3,7 @@ package com.jtmc.apps.oasis.api.v1.notes;
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.api.v1.payments.PaymentResponse;
 import com.jtmc.apps.oasis.application.abonos.AbonoAppImpl;
+import com.jtmc.apps.oasis.application.blockerror.BlockErrorAppImpl;
 import com.jtmc.apps.oasis.application.blocks.BlockAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
 import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,9 @@ public class NotesApiImpl implements NotesApi {
 
     @Inject
     private BlockAppImpl blockApp;
+
+    @Inject
+    private BlockErrorAppImpl blockErrorApp;
 
     @Inject
     private NoteConverterToNotesResponse converterToNotesResponse;
@@ -211,6 +216,40 @@ public class NotesApiImpl implements NotesApi {
             System.out.printf("Discount should not be greater than totalLiters. note %s on update operation.%n", notesRequest.getNoteId());
             throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public Response deleteNote(int noteId) {
+        //todo: validate requests comes from admin
+        checkArgument(noteId > 0, "Invalid NoteId");
+
+        Optional<CustomNote> note = notesApp.selectOneNote(noteId);
+        if(!note.isPresent()) {
+            System.out.printf("Note #%d not found, so not able to deleteMark.%n", noteId);
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
+        int result = notesApp.deleteMarkNote(noteId);
+        if(result != 1) {
+            System.out.printf("Not able to deleteMark note #%d.%n", noteId);
+            throw new WebApplicationException("Internal Error", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.printf("DeleteMark for note #%d done successfully.%n", noteId);
+
+        System.out.printf("About to set SerieError related to Note #%d%n", noteId);
+        Serieerror error = new Serieerror();
+        error.setId(null);
+        error.setFecharegistro(Instant.now());
+        error.setNonota(String.format("%s", note.get().getNonota()));
+        error.setIdchofer(note.get().getIdchofer());
+        //todo: this text is only valid if JWT validation is properly done
+        error.setObservaciones("Nota Eliminada por el ADMIN");
+        if(blockErrorApp.insertBlockError(error) != 1) {
+            System.out.printf("Could not set SerieError for note %d", noteId);
+            throw new WebApplicationException("Error inserting SerieError", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.println("Finished DeleteNote process successfully");
+        return Response.ok().build();
     }
 
     @Override

@@ -27,6 +27,11 @@ public interface NotesApi {
     @Consumes(MediaType.APPLICATION_JSON)
     Response updateNote(NotesRequest notesRequest);
 
+    @DELETE
+    @Path("/{noteId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response deleteNote(@PathParam("noteId") int noteId);
+
     @GET
     @Path("/{noteId}/payments")
     @Produces(MediaType.APPLICATION_JSON)
