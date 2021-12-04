@@ -1,6 +1,5 @@
 package com.jtmc.apps.oasis.api.v1.notes;
 
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.api.v1.payments.PaymentResponse;
 import com.jtmc.apps.oasis.application.abonos.AbonoAppImpl;
@@ -9,7 +8,6 @@ import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
 import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
 import com.jtmc.apps.oasis.domain.*;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.Opt;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -96,6 +94,8 @@ public class NotesApiImpl implements NotesApi {
                 "FinalData should be greater than InitialData");
         checkArgument(StringUtils.isNotBlank(notesRequest.getNote()), "Note number is not valid");
 
+        calculatePaymentForNote(notesRequest);
+
         Optional<Nota> note = notesApp.selectNoteByOrderId(notesRequest.getOrderId());
         if (note.isPresent()) {
             System.out.printf("OrderId %s already has a NOTE linked to it. NoteId: %s%n", notesRequest.getOrderId(), note.get().getId());
@@ -140,6 +140,77 @@ public class NotesApiImpl implements NotesApi {
         System.out.printf("BlockId #%s update correctly.%n", nextBlock.getId());
 
         return Response.ok().build();
+    }
+
+    //todo: do not accept discount_value to be greater than totalData
+    //consider scenarios where there are payments already done.. (what is the expected flow in this scenario)
+
+    @Override
+    public Response updateNote(NotesRequest notesRequest) {
+        checkNotNull(notesRequest, "NotesRequest object is null");
+
+        int newNote = 0;
+        checkArgument(notesRequest.getNoteId() != null && notesRequest.getNoteId() > newNote,
+                "Invalid NoteId");
+        checkNotNull(notesRequest.getRegistrationDate(), "Provide a registrationDate");
+        checkArgument(notesRequest.getEmployeeId() > 0,"Invalid EmployeeId");
+        checkArgument(notesRequest.getInitialData() > 0, "Invalid InitialData");
+        checkArgument(notesRequest.getFinalData() > 0, "Invalid FinalData");
+        checkArgument(notesRequest.getInitialData() < notesRequest.getFinalData(),
+                "FinalData should be greater than InitialData");
+        checkArgument(StringUtils.isNotBlank(notesRequest.getNote()), "Note number is not valid");
+
+        Optional<CustomNote> note = notesApp.selectOneNote(notesRequest.getNoteId());
+        if(!note.isPresent()) {
+            System.out.printf("Note #%s note found.%n", notesRequest.getNoteId());
+            throw new WebApplicationException("Note Not Found", Response.Status.NOT_FOUND);
+        }
+
+        if (note.get().getIdchofer().intValue() != notesRequest.getEmployeeId().intValue()) {
+            System.out.printf("EmployeeId does not match for note %s on update operation.%n", notesRequest.getNoteId());
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
+        if(!note.get().getNonota().equals(notesRequest.getNote())) {
+            System.out.printf("Note-Number does not match for note %s on update operation.%n", notesRequest.getNoteId());
+            System.out.printf("Current Note: %s%n", note.get().getNonota());
+            System.out.printf("Note from Request: %s%n", notesRequest.getNote());
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
+        if(note.get().getIdpedido().intValue() != notesRequest.getOrderId()) {
+            System.out.printf("OrderId does not match for note %s on update operation.%n", notesRequest.getNoteId());
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
+        calculatePaymentForNote(notesRequest);
+
+        System.out.printf("Proceeding to update note %s%n", notesRequest.getNote());
+        int result = notesApp.updateNote(notesConverter.apply(notesRequest));
+        int validState = 1;
+        if(result != validState) {
+            throw new WebApplicationException("Note record not updated", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.println("Note updated successfully");
+        return Response.ok().build();
+    }
+
+    private void calculatePaymentForNote(NotesRequest notesRequest) {
+
+        int discount = notesRequest.getDiscount() != null ? notesRequest.getDiscount() : 0;
+        long liters = notesRequest.getFinalData() - (notesRequest.getInitialData() + discount);
+        double paymentTotal = liters * notesRequest.getPrice().doubleValue();
+        if(notesRequest.getLiters() != liters &&
+                notesRequest.getTotal() != paymentTotal) {
+            System.out.println("Note Payment details are not the same!");
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
+        long realLiters = notesRequest.getFinalData() - notesRequest.getInitialData();
+        if(notesRequest.getDiscount() != null && (notesRequest.getDiscount() > realLiters)) {
+            System.out.printf("Discount should not be greater than totalLiters. note %s on update operation.%n", notesRequest.getNoteId());
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
     }
 
     @Override

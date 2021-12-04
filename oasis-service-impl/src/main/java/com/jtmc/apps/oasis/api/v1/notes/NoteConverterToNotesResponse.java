@@ -13,14 +13,14 @@ public class NoteConverterToNotesResponse implements Function<CustomNote, NotesR
         NotesResponse response = new NotesResponse();
         response.setNoteId(nota.getId());
         response.setNote(nota.getNonota());
-        response.setCredit(nota.getCreditocontado());
+        response.setCredit(nota.getCreditocontado() != null && nota.getCreditocontado());
         response.setLiters(nota.getLitros());
         response.setRegistration(nota.getFecharegistro() != null ?
                 new Date(nota.getFecharegistro().toEpochMilli()): null);
         response.setArrival(nota.getLlegada());
         response.setDeparture(nota.getSalida());
-        response.setDiscount(nota.getLitrosdescontados());
-        response.setDiscountDescription(nota.getRazondescuento());
+        response.setDiscount(nota.getLitrosdescontados() == null ? 0 : nota.getLitrosdescontados());
+        response.setDiscountDescription(nota.getRazondescuento() == null ? "" : nota.getRazondescuento());
         response.setEmployeeId(nota.getIdchofer());
         response.setEmployeeName(nota.getEmployeeName());
         response.setFinalData(nota.getLecturafinal());
