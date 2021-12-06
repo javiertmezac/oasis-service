@@ -1,12 +1,15 @@
 package com.jtmc.apps.oasis.api.v1.notes;
 
 import com.google.inject.Inject;
+import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
+import com.jtmc.apps.oasis.api.v1.annotations.JwtUserClaim;
 import com.jtmc.apps.oasis.api.v1.payments.PaymentResponse;
 import com.jtmc.apps.oasis.application.abonos.AbonoAppImpl;
 import com.jtmc.apps.oasis.application.blockerror.BlockErrorAppImpl;
 import com.jtmc.apps.oasis.application.blocks.BlockAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
 import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
+import com.jtmc.apps.oasis.application.users.UserAppImpl;
 import com.jtmc.apps.oasis.domain.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,7 +25,14 @@ import java.util.stream.Stream;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+@JWTRequired
 public class NotesApiImpl implements NotesApi {
+
+    @Inject
+    private JwtUserClaim userClaim;
+
+    @Inject
+    private UserAppImpl userApp;
 
     @Inject
     private NotesAppImpl notesApp;
@@ -218,9 +228,18 @@ public class NotesApiImpl implements NotesApi {
         }
     }
 
+    private void verifyAdminRole() {
+        if (!userClaim.getSubject().equals("ADMINISTRADOR")) {
+            System.out.println(userClaim.getSubject());
+            System.out.println("UserClaim is not admin");
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+    }
+
     @Override
     public Response deleteNote(int noteId) {
-        //todo: validate requests comes from admin
+        verifyAdminRole();
+
         checkArgument(noteId > 0, "Invalid NoteId");
 
         Optional<CustomNote> note = notesApp.selectOneNote(noteId);
@@ -242,7 +261,7 @@ public class NotesApiImpl implements NotesApi {
         error.setFecharegistro(Instant.now());
         error.setNonota(String.format("%s", note.get().getNonota()));
         error.setIdchofer(note.get().getIdchofer());
-        //todo: this text is only valid if JWT validation is properly done
+        //todo: this text is only valid if JWT validation is properly done: ADMIN
         error.setObservaciones("Nota Eliminada por el ADMIN");
         if(blockErrorApp.insertBlockError(error) != 1) {
             System.out.printf("Could not set SerieError for note %d", noteId);
