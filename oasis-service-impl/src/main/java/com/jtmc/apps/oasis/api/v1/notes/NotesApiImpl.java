@@ -59,6 +59,8 @@ public class NotesApiImpl implements NotesApi {
     public NotesResponseList getNotes() {
         List<CustomNote> noteList = notesApp.selectAllRecords();
 
+
+        //todo: is this the correct use case? return 404 if empty list?
         if(noteList == null || noteList.size() == 0) {
             throw new WebApplicationException("Could not fetch Notes",
                     Response.Status.NOT_FOUND);
