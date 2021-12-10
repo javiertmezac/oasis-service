@@ -168,16 +168,16 @@ public class EmployeeApiImpl implements  EmployeeApi {
             throw new WebApplicationException("Not able to set newBlockNumber", Response.Status.INTERNAL_SERVER_ERROR);
         }
 
-        System.out.printf("About to set SerieError for related to block #%d%n", blockId);
+        System.out.printf("About to set SerieError related to block #%d%n", blockId);
         Serieerror error = new Serieerror();
         error.setId(null);
         error.setFecharegistro(Instant.now());
-        error.setNonota(String.format("%s %d-%d", block.get().getLetra().trim(),
-                block.get().getNuminicial(), block.get().getNumfinal()));
+        error.setNonota(String.format("%s - %d", block.get().getLetra().trim(),
+                currentBlockNumber));
         error.setIdchofer(employeeId);
         error.setObservaciones(description);
         if(blockErrorApp.insertBlockError(error) != 1) {
-            System.out.printf("could not set SerieError for block %d", block.get().getId());
+            System.out.printf("Could not set SerieError for block %d", block.get().getId());
             throw new WebApplicationException("Error inserting SerieError", Response.Status.INTERNAL_SERVER_ERROR);
         }
 

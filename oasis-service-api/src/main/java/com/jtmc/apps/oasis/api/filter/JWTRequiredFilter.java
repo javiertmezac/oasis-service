@@ -1,6 +1,9 @@
 package com.jtmc.apps.oasis.api.filter;
 
 import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
+import com.jtmc.apps.oasis.api.v1.annotations.JwtUserClaim;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -29,6 +32,9 @@ public class JWTRequiredFilter implements ContainerRequestFilter {
     @Named("key")
     private String secretKey;
 
+    @Inject
+    private JwtUserClaim userClaim;
+
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
         String authHeader = containerRequestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
@@ -41,10 +47,11 @@ public class JWTRequiredFilter implements ContainerRequestFilter {
             String jwsString = authHeader.substring(authPrefix.length()).trim();
 
             SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-            Jwts.parserBuilder()
+            Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(jwsString);
+            userClaim.setSubject(claims.getBody().getSubject());
         }  catch (SignatureException exception) {
             exception.printStackTrace();
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);

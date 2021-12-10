@@ -63,4 +63,19 @@ public class NotesAppImpl {
             throw e;
         }
     }
+
+    public int deleteMarkNote(int noteId) {
+        try(SqlSession session = sqlSessionFactory.openSession(true)) {
+            NotaMapper mapper = session.getMapper(NotaMapper.class);
+
+            Nota n = new Nota();
+            n.setId(noteId);
+            n.setStatus(false);
+
+            return mapper.updateByPrimaryKeySelective(n);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

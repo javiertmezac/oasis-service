@@ -1,16 +1,21 @@
 package com.jtmc.apps.oasis.api.v1.notes;
 
 import com.google.inject.Inject;
+import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
+import com.jtmc.apps.oasis.api.v1.annotations.JwtUserClaim;
 import com.jtmc.apps.oasis.api.v1.payments.PaymentResponse;
 import com.jtmc.apps.oasis.application.abonos.AbonoAppImpl;
+import com.jtmc.apps.oasis.application.blockerror.BlockErrorAppImpl;
 import com.jtmc.apps.oasis.application.blocks.BlockAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
 import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
+import com.jtmc.apps.oasis.application.users.UserAppImpl;
 import com.jtmc.apps.oasis.domain.*;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +25,14 @@ import java.util.stream.Stream;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+@JWTRequired
 public class NotesApiImpl implements NotesApi {
+
+    @Inject
+    private JwtUserClaim userClaim;
+
+    @Inject
+    private UserAppImpl userApp;
 
     @Inject
     private NotesAppImpl notesApp;
@@ -35,6 +47,9 @@ public class NotesApiImpl implements NotesApi {
     private BlockAppImpl blockApp;
 
     @Inject
+    private BlockErrorAppImpl blockErrorApp;
+
+    @Inject
     private NoteConverterToNotesResponse converterToNotesResponse;
 
     @Inject
@@ -44,6 +59,8 @@ public class NotesApiImpl implements NotesApi {
     public NotesResponseList getNotes() {
         List<CustomNote> noteList = notesApp.selectAllRecords();
 
+
+        //todo: is this the correct use case? return 404 if empty list?
         if(noteList == null || noteList.size() == 0) {
             throw new WebApplicationException("Could not fetch Notes",
                     Response.Status.NOT_FOUND);
@@ -211,6 +228,49 @@ public class NotesApiImpl implements NotesApi {
             System.out.printf("Discount should not be greater than totalLiters. note %s on update operation.%n", notesRequest.getNoteId());
             throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
         }
+    }
+
+    private void verifyAdminRole() {
+        if (!userClaim.getSubject().equals("ADMINISTRADOR")) {
+            System.out.println(userClaim.getSubject());
+            System.out.println("UserClaim is not admin");
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+    }
+
+    @Override
+    public Response deleteNote(int noteId) {
+        verifyAdminRole();
+
+        checkArgument(noteId > 0, "Invalid NoteId");
+
+        Optional<CustomNote> note = notesApp.selectOneNote(noteId);
+        if(!note.isPresent()) {
+            System.out.printf("Note #%d not found, so not able to deleteMark.%n", noteId);
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
+        int result = notesApp.deleteMarkNote(noteId);
+        if(result != 1) {
+            System.out.printf("Not able to deleteMark note #%d.%n", noteId);
+            throw new WebApplicationException("Internal Error", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.printf("DeleteMark for note #%d done successfully.%n", noteId);
+
+        System.out.printf("About to set SerieError related to Note #%d%n", noteId);
+        Serieerror error = new Serieerror();
+        error.setId(null);
+        error.setFecharegistro(Instant.now());
+        error.setNonota(String.format("%s", note.get().getNonota()));
+        error.setIdchofer(note.get().getIdchofer());
+        //todo: this text is only valid if JWT validation is properly done: ADMIN
+        error.setObservaciones("Nota Eliminada por el ADMIN");
+        if(blockErrorApp.insertBlockError(error) != 1) {
+            System.out.printf("Could not set SerieError for note %d", noteId);
+            throw new WebApplicationException("Error inserting SerieError", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        System.out.println("Finished DeleteNote process successfully");
+        return Response.ok().build();
     }
 
     @Override
