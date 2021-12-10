@@ -1,4 +1,21 @@
 
+### version 1.3.2
+UPDATED BLOQUE
+
+increased "letra" from nchar(3) to varchar(10)
+note: this column is part of a PK constraint
+
+follow steps from alter-column.sql file section: 
+- alter a column that is part of a PK constraint
+
+UPDATED NOTA
+
+`alter table Nota alter column noNota varchar(20) not null`
+
+UPDATED SERIE-ERROR
+
+`alter table SerieError alter column noNota varchar(20) not null`
+ 
 ### version 1.1.0
 updated Trabajador
 increased name lenght

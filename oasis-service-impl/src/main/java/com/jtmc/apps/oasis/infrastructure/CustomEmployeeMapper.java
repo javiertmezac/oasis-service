@@ -27,7 +27,7 @@ public interface CustomEmployeeMapper extends TrabajadorMapper {
             @Result(column="nextBlockNumber", property="nextBlockNumber", jdbcType=JdbcType.INTEGER),
             @Result(column="blockStartNumber", property="blockStartNumber", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="blockEndNumber", property="blockEndNumber", jdbcType=JdbcType.INTEGER, id=true),
-            @Result(column="letter", property="letter", jdbcType=JdbcType.NCHAR, id=true),
+            @Result(column="letter", property="letter", jdbcType=JdbcType.VARCHAR, id=true),
             @Result(column="blockId", property="blockId", jdbcType=JdbcType.INTEGER, id=true)
     })
     List<CustomEmployee> selectManyCustomEmployees(SelectStatementProvider selectStatement);

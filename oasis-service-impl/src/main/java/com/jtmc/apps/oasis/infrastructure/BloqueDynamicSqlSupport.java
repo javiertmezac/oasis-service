@@ -7,36 +7,36 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public final class BloqueDynamicSqlSupport {
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.934926-08:00", comments="Source Table: Bloque")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.730527-08:00", comments="Source Table: Bloque")
     public static final Bloque bloque = new Bloque();
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.935351-08:00", comments="Source field: Bloque.letra")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.730932-08:00", comments="Source field: Bloque.letra")
     public static final SqlColumn<String> letra = bloque.letra;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.935712-08:00", comments="Source field: Bloque.numInicial")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.731281-08:00", comments="Source field: Bloque.numInicial")
     public static final SqlColumn<Integer> numinicial = bloque.numinicial;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.935819-08:00", comments="Source field: Bloque.numFinal")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.731398-08:00", comments="Source field: Bloque.numFinal")
     public static final SqlColumn<Integer> numfinal = bloque.numfinal;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.93591-08:00", comments="Source field: Bloque.id")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.7315-08:00", comments="Source field: Bloque.id")
     public static final SqlColumn<Integer> id = bloque.id;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.936001-08:00", comments="Source field: Bloque.idChofer")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.731608-08:00", comments="Source field: Bloque.idChofer")
     public static final SqlColumn<Integer> idchofer = bloque.idchofer;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.936103-08:00", comments="Source field: Bloque.secuencia")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.731693-08:00", comments="Source field: Bloque.secuencia")
     public static final SqlColumn<Integer> secuencia = bloque.secuencia;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.936236-08:00", comments="Source field: Bloque.fechaRegistro")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.731799-08:00", comments="Source field: Bloque.fechaRegistro")
     public static final SqlColumn<Instant> fecharegistro = bloque.fecharegistro;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.936368-08:00", comments="Source field: Bloque.status")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.731895-08:00", comments="Source field: Bloque.status")
     public static final SqlColumn<Boolean> status = bloque.status;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-11-10T19:19:24.935188-08:00", comments="Source Table: Bloque")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2021-12-09T22:22:40.730775-08:00", comments="Source Table: Bloque")
     public static final class Bloque extends SqlTable {
-        public final SqlColumn<String> letra = column("letra", JDBCType.NCHAR);
+        public final SqlColumn<String> letra = column("letra", JDBCType.VARCHAR);
 
         public final SqlColumn<Integer> numinicial = column("numInicial", JDBCType.INTEGER);
 
