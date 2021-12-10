@@ -15,8 +15,7 @@ public class CustomEmployeeResponseConverter implements Function<CustomEmployee,
         response.setAddress(trabajador.getDireccion());
         response.setRegistration(trabajador.getFecharegistro());
 
-        if (trabajador.getLetter() != Character.MIN_VALUE &&
-                trabajador.getNextBlockNumber() != null) {
+        if (trabajador.getNextBlockNumber() != null) {
             response.setBlockNumber(String.valueOf(trabajador.getNextBlockNumber()));
             response.setBlock(String.format("%s %d - %d", trabajador.getLetter(),
                     trabajador.getBlockStartNumber(), trabajador.getBlockEndNumber())

@@ -152,7 +152,7 @@ public class EmployeeApiImpl implements  EmployeeApi {
             throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
         }
 
-        System.out.println("About to increment blockNumber");
+        System.out.printf("About to increment blockNumber for blockId #%s.%n", blockId);
         int newNumber = currentBlockNumber + 1;
         System.out.printf("CurrentBlockNumber: %d, NewBlockNumber: %d.%n", currentBlockNumber, newNumber);
 
