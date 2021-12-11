@@ -28,6 +28,16 @@ public class NotesAppImpl {
        }
     }
 
+    public List<CustomNote> selectPaidNotes() {
+        try(SqlSession session = sqlSessionFactory.openSession()) {
+            CustomNoteMapper mapper = session.getMapper(CustomNoteMapper.class);
+            return mapper.selectPaidNotesSP();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error while fetching PaidNotes");
+        }
+    }
+
     public Optional<CustomNote> selectOneNote(int noteId) {
         try(SqlSession session = sqlSessionFactory.openSession()) {
             CustomNoteMapper mapper = session.getMapper(CustomNoteMapper.class);

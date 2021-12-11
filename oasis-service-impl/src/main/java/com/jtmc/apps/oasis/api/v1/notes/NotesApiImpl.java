@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -56,9 +57,13 @@ public class NotesApiImpl implements NotesApi {
     private NotesConverter notesConverter;
 
     @Override
-    public NotesResponseList getNotes() {
-        List<CustomNote> noteList = notesApp.selectAllRecords();
-
+    public NotesResponseList getNotes(boolean selectPaidNotes) {
+        List<CustomNote> noteList;
+        if (selectPaidNotes) {
+            noteList = notesApp.selectPaidNotes();
+        } else {
+            noteList = notesApp.selectAllRecords();
+        }
 
         //todo: is this the correct use case? return 404 if empty list?
         if(noteList == null || noteList.size() == 0) {

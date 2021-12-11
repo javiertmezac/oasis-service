@@ -1,13 +1,10 @@
 package com.jtmc.apps.oasis.infrastructure;
 
 import com.jtmc.apps.oasis.domain.CustomNote;
-import com.jtmc.apps.oasis.domain.Nota;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.ExistsPredicate;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
@@ -38,6 +35,11 @@ public interface CustomNoteMapper extends NotaMapper {
             @Result(column="debt", property="debt", jdbcType=JdbcType.DECIMAL),
     })
     List<CustomNote> selectManyCustomNotes();
+
+    @Select(value = "{ call PaidNotesList }")
+    @Options(statementType = StatementType.CALLABLE)
+    @ResultMap("CustomNotaResult")
+    List<CustomNote> selectPaidNotesSP();
 
     @SelectProvider(type= SqlProviderAdapter.class, method="select")
     @Results(id="CustomOneNotaResult", value = {
