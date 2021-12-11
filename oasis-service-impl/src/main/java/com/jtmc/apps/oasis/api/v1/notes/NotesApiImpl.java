@@ -58,7 +58,6 @@ public class NotesApiImpl implements NotesApi {
 
     @Override
     public NotesResponseList getNotes(boolean selectPaidNotes) {
-        System.out.printf("GetNotes: queryArg selectPaidNotes:  %s. %n", selectPaidNotes);
         List<CustomNote> noteList;
         if (selectPaidNotes) {
             noteList = notesApp.selectPaidNotes();

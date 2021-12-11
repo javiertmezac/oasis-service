@@ -1,4 +1,14 @@
 
+### version 1.3.3
+ADDED NEW SP PaidNotesList
+
+This SP is going to list all the notes that are already paid.
+
+There is something particular in the way the having in this statement works, that it cannot be done 
+through Mybatis DynamisSql.
+
+take a look at the ./stored-procedures/PaidNotesLis.sql
+
 ### version 1.3.2
 UPDATED BLOQUE
 
