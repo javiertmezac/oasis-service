@@ -10,7 +10,7 @@ public interface NotesApi {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    NotesResponseList getNotes();
+    NotesResponseList getNotes(@QueryParam("selectPaidNotes") @DefaultValue("false") boolean selectPaidNotes);
 
     @GET
     @Path("/{id}")
