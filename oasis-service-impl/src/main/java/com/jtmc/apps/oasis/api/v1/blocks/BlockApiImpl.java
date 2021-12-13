@@ -82,4 +82,23 @@ public class BlockApiImpl implements BlockApi {
         blockResponse.setNextBlockNumber(String.valueOf(block.get().getSecuencia()));
         return blockResponse;
     }
+
+    @Override
+    public Response deleteMarkBlock(int blockId) {
+        checkArgument(blockId != 0, "Invalid BlockId");
+
+        Optional<Bloque> block = blockApp.selectOne(blockId);
+        if (!block.isPresent()) {
+            System.out.printf("Block #%d not found. %n", blockId);
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
+        if (blockApp.deleteMarkBlock(block.get()) != 1) {
+            System.out.printf("Not able to update / delete mark correctly: BlockId %d.%n", blockId);
+            throw new WebApplicationException("Internal Error", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+        System.out.printf("Delete marked successfully on blockID: %d.%n", blockId);
+        return Response.ok().build();
+    }
 }

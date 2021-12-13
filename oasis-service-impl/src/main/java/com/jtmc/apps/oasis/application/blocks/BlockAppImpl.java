@@ -51,4 +51,15 @@ public class BlockAppImpl {
                     .and(BloqueDynamicSqlSupport.status, SqlBuilder.isTrue()));
         }
     }
+
+    public int deleteMarkBlock(Bloque b) {
+        try(SqlSession session = sqlSessionFactory.openSession(true)) {
+            BloqueMapper mapper = session.getMapper(BloqueMapper.class);
+            b.setStatus(false);
+            return mapper.updateByPrimaryKeySelective(b);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }
