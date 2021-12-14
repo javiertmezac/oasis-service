@@ -132,7 +132,8 @@ public class EmployeeApiImpl implements  EmployeeApi {
     }
 
     @Override
-    public Response incrementNextBlockNumber(int employeeId, int blockId, int currentBlockNumber, String description) {
+    public Response incrementNextBlockNumber(int employeeId, int blockId,
+                                             int currentBlockNumber, String description) {
         checkArgument(employeeId > 0, "Invalid EmployeeId");
         checkArgument(blockId > 0, "Invalid BlockId");
         checkArgument(StringUtils.isNotBlank(description), "Invalid description");

@@ -2,10 +2,28 @@ package com.jtmc.apps.oasis.api.v1.blocks;
 
 public class BlockRequest {
 
+    private int blockId;
     private String letter;
     private int startNumber;
     private int endNumber;
     private int employeeId;
+    private int nextBlockNumber;
+
+    public int getNextBlockNumber() {
+        return nextBlockNumber;
+    }
+
+    public void setNextBlockNumber(int nextBlockNumber) {
+        this.nextBlockNumber = nextBlockNumber;
+    }
+
+    public int getBlockId() {
+        return blockId;
+    }
+
+    public void setBlockId(int blockId) {
+        this.blockId = blockId;
+    }
 
     public String getLetter() {
         return letter;

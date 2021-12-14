@@ -16,4 +16,15 @@ public interface BlockApi {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     BlockResponse getBlock(@PathParam("id") int blockId);
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response deleteMarkBlock(@PathParam("id") int blockId);
+
+    @PUT
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response updateBlock(BlockRequest blockRequest);
+
 }
