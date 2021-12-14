@@ -8,6 +8,7 @@ import com.jtmc.apps.oasis.application.abonos.AbonoAppImpl;
 import com.jtmc.apps.oasis.application.blockerror.BlockErrorAppImpl;
 import com.jtmc.apps.oasis.application.blocks.BlockAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
+import com.jtmc.apps.oasis.application.exceptions.UserNotAdminException;
 import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
 import com.jtmc.apps.oasis.application.users.UserAppImpl;
 import com.jtmc.apps.oasis.domain.*;
@@ -16,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -28,9 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @JWTRequired
 public class NotesApiImpl implements NotesApi {
-
-    @Inject
-    private JwtUserClaim userClaim;
 
     @Inject
     private UserAppImpl userApp;
@@ -235,17 +232,9 @@ public class NotesApiImpl implements NotesApi {
         }
     }
 
-    private void verifyAdminRole() {
-        if (!userClaim.getSubject().equals("ADMINISTRADOR")) {
-            System.out.println(userClaim.getSubject());
-            System.out.println("UserClaim is not admin");
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-        }
-    }
-
     @Override
     public Response deleteNote(int noteId) {
-        verifyAdminRole();
+       userApp.isUserAdmin();
 
         checkArgument(noteId > 0, "Invalid NoteId");
 
@@ -268,8 +257,8 @@ public class NotesApiImpl implements NotesApi {
         error.setFecharegistro(Instant.now());
         error.setNonota(String.format("%s", note.get().getNonota()));
         error.setIdchofer(note.get().getIdchofer());
-        //todo: this text is only valid if JWT validation is properly done: ADMIN
-        error.setObservaciones("Nota Eliminada por el ADMIN");
+        //this text is only valid if JWT validation is properly done: ADMIN
+        error.setObservaciones("Secuencia eliminada por el ADMIN");
         if(blockErrorApp.insertBlockError(error) != 1) {
             System.out.printf("Could not set SerieError for note %d", noteId);
             throw new WebApplicationException("Error inserting SerieError", Response.Status.INTERNAL_SERVER_ERROR);
