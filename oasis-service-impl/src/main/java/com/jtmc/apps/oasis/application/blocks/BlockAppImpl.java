@@ -17,7 +17,7 @@ public class BlockAppImpl {
     @Inject
     private SqlSessionFactory sqlSessionFactory;
 
-    public Optional<Bloque> getNextNumberForActiveEmployee(int employeeId) {
+    public Optional<Bloque> getBlockForActiveEmployee(int employeeId) {
         try(SqlSession session = sqlSessionFactory.openSession()) {
             BloqueMapper mapper = session.getMapper(BloqueMapper.class);
             return mapper.selectOne(c -> c.where(BloqueDynamicSqlSupport.status, SqlBuilder.isTrue())

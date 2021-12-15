@@ -126,7 +126,7 @@ public class NotesApiImpl implements NotesApi {
             throw new WebApplicationException("Employee not Found", Response.Status.NOT_FOUND);
         }
 
-        Optional<Bloque> block = blockApp.getNextNumberForActiveEmployee(notesRequest.getEmployeeId());
+        Optional<Bloque> block = blockApp.getBlockForActiveEmployee(notesRequest.getEmployeeId());
         if(!block.isPresent()) {
             System.out.printf("Could not found block for employee %s%n", notesRequest.getEmployeeId());
             throw new WebApplicationException("Block Not Found", Response.Status.NOT_FOUND);
@@ -252,17 +252,12 @@ public class NotesApiImpl implements NotesApi {
         System.out.printf("DeleteMark for note #%d done successfully.%n", noteId);
 
         System.out.printf("About to set SerieError related to Note #%d%n", noteId);
-        Serieerror error = new Serieerror();
-        error.setId(null);
-        error.setFecharegistro(Instant.now());
-        error.setNonota(String.format("%s", note.get().getNonota()));
-        error.setIdchofer(note.get().getIdchofer());
+        String affectedNote = String.format("%s", note.get().getNonota());
         //this text is only valid if JWT validation is properly done: ADMIN
-        error.setObservaciones("Secuencia eliminada por el ADMIN");
-        if(blockErrorApp.insertBlockError(error) != 1) {
-            System.out.printf("Could not set SerieError for note %d", noteId);
-            throw new WebApplicationException("Error inserting SerieError", Response.Status.INTERNAL_SERVER_ERROR);
-        }
+        String comments = "Secuencia eliminada por el ADMIN";
+        //todo: confirm if InternalError (or exception) should be thrown on serieError insertion failing
+        blockErrorApp.insertBlockError(comments, affectedNote, note.get().getIdchofer());
+
         System.out.println("Finished DeleteNote process successfully");
         return Response.ok().build();
     }

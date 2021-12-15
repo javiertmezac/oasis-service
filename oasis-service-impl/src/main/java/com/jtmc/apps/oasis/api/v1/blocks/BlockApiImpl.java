@@ -115,7 +115,7 @@ public class BlockApiImpl implements BlockApi {
         String affectedNote = String.format("%s - %d", block.get().getLetra(), block.get().getSecuencia());
         String comments = String.format("ADMIN Request. Block %s %d - %d was delete marked",
                 block.get().getLetra(), block.get().getNuminicial(), block.get().getNumfinal());
-        insertBlockError(comments, affectedNote, block.get().getIdchofer());
+        blockErrorApp.insertBlockError(comments, affectedNote, block.get().getIdchofer());
 
         return Response.ok().build();
     }
@@ -173,26 +173,8 @@ public class BlockApiImpl implements BlockApi {
         String comments = String.format("ADMIN request.\n %s.\n %s was changed to %s", blockDetails,
                 affectedBlock, blockUpdatedValues);
 
-        insertBlockError(comments, affectedNote, blockRequest.getEmployeeId());
+        blockErrorApp.insertBlockError(comments, affectedNote, blockRequest.getEmployeeId());
 
         return Response.ok().build();
-    }
-
-    //todo: refactor
-    private void insertBlockError(String comments, String affectedNote, int employeeId) {
-
-        System.out.println("About to create BlockError for tracking purposes");
-        Serieerror serieerror = new Serieerror();
-        serieerror.setObservaciones(comments);
-        serieerror.setNonota(affectedNote);
-        serieerror.setIdchofer(employeeId);
-        serieerror.setFecharegistro(Instant.now());
-        serieerror.setId(null);
-        if(blockErrorApp.insertBlockError(serieerror) != 1) {
-            System.out.println("Not able to insert BlockError");
-            System.out.println(comments);
-        }
-        System.out.println("BlockError inserted successfully");
-
     }
 }

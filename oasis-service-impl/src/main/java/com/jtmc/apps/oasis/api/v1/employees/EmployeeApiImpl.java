@@ -117,10 +117,13 @@ public class EmployeeApiImpl implements  EmployeeApi {
     public Response deleteMarkerEmployee(int employeeId) {
         checkArgument(employeeId > 0, "Invalid employeeId");
 
+        if(!employeesApp.selectOne(employeeId).isPresent()) {
+            System.out.printf("Employee %d Not Found.%n", employeeId);
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
         Trabajador employee = new Trabajador();
         employee.setId(employeeId);
-        //todo: add validation. if user has block assigned, do not deletemark employee
-
         int value = employeesApp.deleteMark(employee);
         if(value != 1) {
             System.out.printf("Attempted to delete employeeId %d but it failed.%n", employeeId);
@@ -128,6 +131,25 @@ public class EmployeeApiImpl implements  EmployeeApi {
                     Response.Status.INTERNAL_SERVER_ERROR);
         }
         System.out.printf("Employee %d was delete marked successfully.%n", employeeId);
+
+        System.out.println("Looking for active block assignations!");
+        Optional<Bloque> block = blockApp.getBlockForActiveEmployee(employeeId);
+        if(!block.isPresent()) {
+            System.out.printf("There is no active Block assignation for employee %d.%n", employeeId);
+        } else {
+            System.out.printf("Found block #%d assigned to employee %d.%n", block.get().getId(), employeeId);
+            System.out.println("Block should be delete marked too.");
+            if (blockApp.deleteMarkBlock(block.get()) !=1 ) {
+                System.out.printf("Was not able to delete mark Block #%d.%n", block.get().getId());
+            }
+            System.out.println("Block was delete marked successfully.");
+
+            String comments = String.format("Employee deleted. Found block #%d which should be delete marked.",
+                    block.get().getId());
+            String affectedBlock = String.format("%s - %d", block.get().getLetra(),
+                    block.get().getSecuencia());
+            blockErrorApp.insertBlockError(comments, affectedBlock, employeeId);
+        }
         return Response.ok().build();
     }
 
@@ -168,21 +190,14 @@ public class EmployeeApiImpl implements  EmployeeApi {
             System.out.printf("Not able to set newNumber %d for block %d.%n", newNumber, blockId);
             throw new WebApplicationException("Not able to set newBlockNumber", Response.Status.INTERNAL_SERVER_ERROR);
         }
+        System.out.println("Block Number Updated!");
 
         System.out.printf("About to set SerieError related to block #%d%n", blockId);
-        Serieerror error = new Serieerror();
-        error.setId(null);
-        error.setFecharegistro(Instant.now());
-        error.setNonota(String.format("%s - %d", block.get().getLetra().trim(),
-                currentBlockNumber));
-        error.setIdchofer(employeeId);
-        error.setObservaciones(description);
-        if(blockErrorApp.insertBlockError(error) != 1) {
-            System.out.printf("Could not set SerieError for block %d", block.get().getId());
-            throw new WebApplicationException("Error inserting SerieError", Response.Status.INTERNAL_SERVER_ERROR);
-        }
+        String affectedNote = String.format("%s - %d", block.get().getLetra().trim(),
+                currentBlockNumber);
+        //todo: confirm if InternalServerError should be sent if SerieError insertion fails
+        blockErrorApp.insertBlockError(description, affectedNote, employeeId);
 
-        System.out.println("Block Number Updated!");
         return Response.ok().build();
     }
 }
