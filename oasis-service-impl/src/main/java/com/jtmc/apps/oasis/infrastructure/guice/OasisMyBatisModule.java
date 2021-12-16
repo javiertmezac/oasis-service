@@ -1,7 +1,6 @@
 package com.jtmc.apps.oasis.infrastructure.guice;
 
 import com.google.inject.name.Names;
-import com.jtmc.apps.oasis.domain.Serieerror;
 import com.jtmc.apps.oasis.infrastructure.*;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.mybatis.guice.MyBatisModule;
@@ -36,6 +35,7 @@ public class OasisMyBatisModule extends MyBatisModule {
         addMapperClass(PreciogranelMapper.class);
         addMapperClass(BloqueMapper.class);
         addMapperClass(SerieerrorMapper.class);
+        addMapperClass(ClientCleaningTankMapper.class);
 
         addMapperClass(CustomOrderMapper.class);
         addMapperClass(CustomNoteMapper.class);

@@ -55,5 +55,9 @@
             <property name="virtualKeyColumns" value="id"/>
             <columnOverride column="fecharegistro" javaType="java.time.Instant" />
         </table>
+        <table tableName="ClientCleaningTankRecord" >
+            <property name="virtualKeyColumns" value="id"/>
+            <columnOverride column="tankCleaningDate" javaType="java.time.Instant" />
+        </table>
     </context>
 </generatorConfiguration>
