@@ -1,4 +1,10 @@
 
+### version 1.5.0
+ADDED NEW TABLE "CLIENT CLEANING TANK RECORD" to track every time a 
+new date for next cleaning is assigned.
+
+Script: createTable-ClientCleaningTankRecord
+
 ### version 1.3.3
 ADDED NEW SP PaidNotesList
 
