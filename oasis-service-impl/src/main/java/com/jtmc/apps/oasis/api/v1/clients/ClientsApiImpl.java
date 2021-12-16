@@ -3,15 +3,18 @@ package com.jtmc.apps.oasis.api.v1.clients;
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
 import com.jtmc.apps.oasis.application.clients.ClientAppImpl;
+import com.jtmc.apps.oasis.application.clients.ClientCleaningTankAppImpl;
 import com.jtmc.apps.oasis.application.orders.OrdersAppImpl;
+import com.jtmc.apps.oasis.domain.ClientCleaningTank;
 import com.jtmc.apps.oasis.domain.CustomClient;
 import com.jtmc.apps.oasis.domain.Empresa;
 import com.jtmc.apps.oasis.domain.Pedido;
-import com.sun.imageio.plugins.wbmp.WBMPImageReader;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +28,9 @@ public class ClientsApiImpl implements ClientsApi {
 
     @Inject
     private ClientAppImpl clientApp;
+
+    @Inject
+    private ClientCleaningTankAppImpl cleaningTankApp;
 
     @Inject
     private OrdersAppImpl ordersApp;
@@ -84,7 +90,7 @@ public class ClientsApiImpl implements ClientsApi {
         client.setFecharegistro(clientRequest.getClientInstantRegistration());
         client.setIdprecio(clientRequest.getClientPriceId());
         client.setSiglavado(clientRequest.getClientInstantNextClean());
-
+        client.setNextcleaningcomments(clientRequest.getNextCleaningComments());
 
         if (clientApp.insertClient(client) != 1) {
             System.out.println("Could not insert new Client Record");
@@ -103,6 +109,12 @@ public class ClientsApiImpl implements ClientsApi {
         checkArgument(clientRequest.getClientId() != newClient, "Invalid ClientId");
         checkArgument(clientRequest.getClientPriceId() > 0, "Invalid ClientPriceId");
 
+        Optional<CustomClient> c = clientApp.selectOne(clientRequest.getClientId());
+        if(!c.isPresent()) {
+            System.out.printf("Client #%d Not Found", clientRequest.getClientId());
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
+
         Empresa client = new Empresa();
         client.setId(clientRequest.getClientId());
         client.setNocliente(clientRequest.getClientCode());
@@ -117,13 +129,37 @@ public class ClientsApiImpl implements ClientsApi {
         client.setCpostal(clientRequest.getClientCp());
         client.setIdprecio(clientRequest.getClientPriceId());
         client.setSiglavado(clientRequest.getClientInstantNextClean());
+        client.setNextcleaningcomments(clientRequest.getNextCleaningComments());
 
         if (clientApp.updateSelective(client) != 1) {
             System.out.println("Could not update Client Record");
             throw new WebApplicationException("Client/Empresa not updated", Response.Status.INTERNAL_SERVER_ERROR);
         }
+        System.out.printf("Empresa/Client #%s updated successfully.%n", clientRequest.getClientId());
 
-        System.out.printf("Empresa/Client #%s updated successfully", clientRequest.getClientId());
+        //todo: if nextCleanDate != from DB, then create new record for nextClean
+        int sameDateComparisonValue = 0;
+        Instant oldCleaningTankDate = c.get().getSiglavado();
+        if(oldCleaningTankDate != null && oldCleaningTankDate.truncatedTo(ChronoUnit.DAYS)
+                .compareTo(
+                        clientRequest.getClientInstantNextClean().truncatedTo(ChronoUnit.DAYS)
+                ) != sameDateComparisonValue) {
+            System.out.println("Found clientNextCleanDate different from dataBase value, " +
+                    "thus creating new CleaningTankRecord");
+
+            ClientCleaningTank cleaningTank = new ClientCleaningTank();
+            cleaningTank.setId(null);
+            cleaningTank.setClientid(client.getId());
+            cleaningTank.setComments(c.get().getNextcleaningcomments());
+            cleaningTank.setTankcleaningdate(oldCleaningTankDate);
+            cleaningTank.setRegistrationdate(Instant.now());
+            if(cleaningTankApp.insertClientCleaningTank(cleaningTank) != 1) {
+                System.out.println("WARNING: CleaningTankRecord not Inserted");
+                throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+            }
+            System.out.printf("New CleaningTankRecord inserted for client #%d.%n", client.getId());
+        }
+
         return Response.ok().build();
     }
 

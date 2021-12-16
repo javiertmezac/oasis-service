@@ -1,7 +1,6 @@
 package com.jtmc.apps.oasis.infrastructure;
 
 import com.jtmc.apps.oasis.domain.CustomClient;
-import com.jtmc.apps.oasis.domain.Empresa;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -30,7 +29,8 @@ public interface CustomClientMapper extends EmpresaMapper {
             @Result(column="fechaRegistro", property="fecharegistro", jdbcType=JdbcType.TIMESTAMP),
             @Result(column="idPrecio", property="idprecio", jdbcType=JdbcType.TINYINT),
             @Result(column="precio", property="precio", jdbcType=JdbcType.DECIMAL),
-            @Result(column="sigLavado", property="siglavado", jdbcType=JdbcType.TIMESTAMP)
+            @Result(column="sigLavado", property="siglavado", jdbcType=JdbcType.TIMESTAMP),
+            @Result(column="nextCleaningComments", property="nextcleaningcomments", jdbcType=JdbcType.VARCHAR)
     })
     List<CustomClient> selectManyCustomClient(SelectStatementProvider selectStatement);
 

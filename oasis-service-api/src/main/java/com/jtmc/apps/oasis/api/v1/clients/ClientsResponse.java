@@ -8,6 +8,15 @@ public class ClientsResponse extends ClientBase {
     private Date clientRegistration;
     private double clientPrice;
     private Date clientNextClean;
+    private String nextCleaningComments;
+
+    public String getNextCleaningComments() {
+        return nextCleaningComments;
+    }
+
+    public void setNextCleaningComments(String nextCleaningComments) {
+        this.nextCleaningComments = nextCleaningComments;
+    }
 
     public Boolean getClientStatus() {
         return clientStatus;

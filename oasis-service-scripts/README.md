@@ -5,6 +5,11 @@ new date for next cleaning is assigned.
 
 Script: createTable-ClientCleaningTankRecord
 
+ADDED nextCleaningComments COLUMN to EMPRESAS
+
+`alter table Empresa
+add nextCleaningComments varchar(250) null`
+
 ### version 1.3.3
 ADDED NEW SP PaidNotesList
 

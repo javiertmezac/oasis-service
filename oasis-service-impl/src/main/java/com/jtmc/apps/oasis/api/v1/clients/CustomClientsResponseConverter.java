@@ -29,6 +29,7 @@ public class CustomClientsResponseConverter implements Function<CustomClient, Cl
         response.setClientPriceId(empresa.getIdprecio());
         response.setClientNextClean(empresa.getSiglavado() != null ?
                 new Date(empresa.getSiglavado().toEpochMilli()) : null);
+        response.setNextCleaningComments(empresa.getNextcleaningcomments());
         response.setClientPrice(empresa.getPrice());
         return response;
     }
