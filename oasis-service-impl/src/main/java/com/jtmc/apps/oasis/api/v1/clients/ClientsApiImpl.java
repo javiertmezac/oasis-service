@@ -10,6 +10,7 @@ import com.jtmc.apps.oasis.domain.CustomClient;
 import com.jtmc.apps.oasis.domain.Empresa;
 import com.jtmc.apps.oasis.domain.Pedido;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -37,6 +38,9 @@ public class ClientsApiImpl implements ClientsApi {
 
     @Inject
     private CustomClientsResponseConverter customClientsResponseConverter;
+
+    @Inject
+    private CleaningTankConverter cleaningTankConverter;
 
     @Override
     public ClientsResponseList getClients() {
@@ -190,5 +194,49 @@ public class ClientsApiImpl implements ClientsApi {
         }
         System.out.printf("ClientId %d was delete marked successfully.%n", clientId);
         return Response.ok().build();
+    }
+
+    @Override
+    public CleaningTankResponse getClientCleaningTankRecord(int clientId) {
+        checkArgument(clientId != 0, "Invalid ClientId");
+
+        clientApp.validateCustomClientExists(clientId);
+        List<ClientCleaningTank> clientCleaningTanks = cleaningTankApp.selectAllRecordsForGivenClient(clientId);
+        Stream<CleaningTank> cleaningTankStream =
+                clientCleaningTanks.stream().map(c -> cleaningTankConverter.apply(c));
+        CleaningTankResponse response = new CleaningTankResponse();
+        response.setCleaningTank(cleaningTankStream.collect(Collectors.toList()));
+        return response;
+    }
+
+    @Override
+    public Response deleteMarkCleaningTank(int clientId, int cleaningTankId) {
+        checkArgument(clientId != 0, "Invalid ClientId");
+        checkArgument(cleaningTankId != 0, "Invalid CleaningTankId");
+
+        /*
+        todo:
+           how to change this try catch logic, so that same validateCustomClient
+           returns correct exception or general exception
+        */
+        try {
+            clientApp.validateCustomClientExists(clientId);
+            cleaningTankApp.validateCleaningTankExist(cleaningTankId);
+
+            ClientCleaningTank cleaningTank = new ClientCleaningTank();
+            cleaningTank.setId(cleaningTankId);
+            cleaningTank.setClientid(clientId);
+            if (cleaningTankApp.deleteMarkCleaningTank(cleaningTank) != 1){
+                System.out.printf("Not able to deleteMar on cleaningId #%d.%n", cleaningTankId);
+                throw new WebApplicationException("Internal Error", Response.Status.INTERNAL_SERVER_ERROR);
+            }
+            System.out.printf("Delete Marked successfully done on cleaningTankId #%d.%n", cleaningTankId);
+            return  Response.ok().build();
+
+        } catch (WebApplicationException exception) {
+            System.out.printf("DeleteMark on Client #%d and CleaningTank #%d." +
+                    "Changing display message to BadRequest.%n", clientId, cleaningTankId);
+            throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
+        }
     }
 }
