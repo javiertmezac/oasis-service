@@ -61,13 +61,8 @@ public class ClientsApiImpl implements ClientsApi {
 
     @Override
     public ClientsResponse getClient(int clientId) {
-         Optional<CustomClient> empresa = clientApp.selectOne(clientId);
-
-        if (!empresa.isPresent()){
-            throw new WebApplicationException("Empresa not Found", Response.Status.NOT_FOUND);
-        }
-
-        return customClientsResponseConverter.apply(empresa.get());
+        CustomClient client = clientApp.validateCustomClientExists(clientId);
+        return customClientsResponseConverter.apply(client);
     }
 
     @Override
@@ -113,9 +108,11 @@ public class ClientsApiImpl implements ClientsApi {
         checkArgument(clientRequest.getClientId() != newClient, "Invalid ClientId");
         checkArgument(clientRequest.getClientPriceId() > 0, "Invalid ClientPriceId");
 
-        Optional<CustomClient> c = clientApp.selectOne(clientRequest.getClientId());
-        if(!c.isPresent()) {
-            System.out.printf("Client #%d Not Found", clientRequest.getClientId());
+        CustomClient c;
+        try {
+            c = clientApp.validateCustomClientExists(clientRequest.getClientId());
+        } catch (WebApplicationException exception) {
+            System.out.printf("Masking NotFound to BadRequest for ClientId #%d.%n", clientRequest.getClientId());
             throw new WebApplicationException("Bad Request", Response.Status.BAD_REQUEST);
         }
 
@@ -143,7 +140,7 @@ public class ClientsApiImpl implements ClientsApi {
 
         //todo: if nextCleanDate != from DB, then create new record for nextClean
         int sameDateComparisonValue = 0;
-        Instant oldCleaningTankDate = c.get().getSiglavado();
+        Instant oldCleaningTankDate = c.getSiglavado();
         if(oldCleaningTankDate != null && oldCleaningTankDate.truncatedTo(ChronoUnit.DAYS)
                 .compareTo(
                         clientRequest.getClientInstantNextClean().truncatedTo(ChronoUnit.DAYS)
@@ -154,7 +151,7 @@ public class ClientsApiImpl implements ClientsApi {
             ClientCleaningTank cleaningTank = new ClientCleaningTank();
             cleaningTank.setId(null);
             cleaningTank.setClientid(client.getId());
-            cleaningTank.setComments(c.get().getNextcleaningcomments());
+            cleaningTank.setComments(c.getNextcleaningcomments());
             cleaningTank.setTankcleaningdate(oldCleaningTankDate);
             cleaningTank.setRegistrationdate(Instant.now());
             if(cleaningTankApp.insertClientCleaningTank(cleaningTank) != 1) {
@@ -171,16 +168,12 @@ public class ClientsApiImpl implements ClientsApi {
     public Response deleteMarkClient(int clientId) {
         checkArgument(clientId > 0, "Invalid clientId");
 
-        Optional<CustomClient> client = clientApp.selectOne(clientId);
-        if(!client.isPresent()) {
-            System.out.printf("ClientId %d Not Found.%n", clientId);
-            throw new WebApplicationException("Not Found", Response.Status.NOT_FOUND);
-        }
+        CustomClient client = clientApp.validateCustomClientExists(clientId);
 
         List<Pedido> ordersList = ordersApp.selectActiveOrderForClient(clientId);
         if (ordersList != null && ordersList.size() > 0) {
             System.out.printf("Client %s Id %d still has active orders. %n",
-                    client.get().getNombre(), client.get().getId());
+                    client.getNombre(), client.getId());
             throw new WebApplicationException("Not able to delete as there are active orders",
                     Response.Status.CONFLICT);
         }
