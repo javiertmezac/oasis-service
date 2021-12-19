@@ -6,6 +6,15 @@ public class ClientRequest extends ClientBase {
 
     private Instant clientInstantRegistration;
     private Instant clientInstantNextClean;
+    private String nextCleaningComments;
+
+    public String getNextCleaningComments() {
+        return nextCleaningComments;
+    }
+
+    public void setNextCleaningComments(String nextCleaningComments) {
+        this.nextCleaningComments = nextCleaningComments;
+    }
 
     public Instant getClientInstantRegistration() {
         return clientInstantRegistration;

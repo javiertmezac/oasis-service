@@ -17,6 +17,11 @@ public interface ClientsApi {
     @Produces(MediaType.APPLICATION_JSON)
     ClientsResponse getClient(@PathParam("id") int clientId);
 
+    @GET
+    @Path("/{id}/cleaning-tanks")
+    @Produces(MediaType.APPLICATION_JSON)
+    CleaningTankResponse getClientCleaningTankRecord(@PathParam("id") int clientId);
+
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -30,4 +35,9 @@ public interface ClientsApi {
     @DELETE
     @Path("/{id}")
     Response deleteMarkClient(@PathParam("id") int clientId);
+
+    @DELETE
+    @Path("/{id}/cleaning-tanks/{cleaningTankId}")
+    Response deleteMarkCleaningTank(@PathParam("id") int clientId,
+                                    @PathParam("cleaningTankId") int cleaningTankId);
 }

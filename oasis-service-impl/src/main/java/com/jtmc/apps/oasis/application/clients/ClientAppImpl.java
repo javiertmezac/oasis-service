@@ -14,18 +14,32 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.jtmc.apps.oasis.infrastructure.PedidoDynamicSqlSupport.idempresa;
-import static com.jtmc.apps.oasis.infrastructure.PedidoDynamicSqlSupport.status;
-
 public class ClientAppImpl {
 
     @Inject
     private SqlSessionFactory sqlSessionFactory;
+
+    /***
+     * Validates a given clientId exists in DB
+     * @param clientId Client Identifier
+     * @return CustomClient if it is present in DB
+     * @throws WebApplicationException when CustomClient is not Present
+     */
+    public CustomClient validateCustomClientExists(int clientId) {
+       Optional<CustomClient> client = this.selectOne(clientId);
+       if (!client.isPresent()) {
+           System.out.printf("Client #%d Not Found", clientId);
+           throw new WebApplicationException("Not Found", Response.Status.NOT_FOUND);
+       }
+       return  client.get();
+    }
 
     public List<CustomClient> selectAllRows() {
         try(SqlSession session = sqlSessionFactory.openSession()) {
