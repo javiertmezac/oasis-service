@@ -10,7 +10,9 @@ import com.jtmc.apps.oasis.infrastructure.PreciogranelDynamicSqlSupport;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
@@ -114,6 +116,26 @@ public class ClientAppImpl {
             return mapper.select(c -> c.where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue())
                             .and(EmpresaDynamicSqlSupport.idprecio, SqlBuilder.isEqualTo(priceId))
             );
+        }
+    }
+
+    public List<CustomClient> selectClientsNotRecentOrders() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CustomClientMapper mapper = session.getMapper(CustomClientMapper.class);
+            return mapper.selectViewNotOrderIn30Days();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    public long countActiveClients() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
+            return mapper.count(c -> c.where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue()));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
         }
     }
 }

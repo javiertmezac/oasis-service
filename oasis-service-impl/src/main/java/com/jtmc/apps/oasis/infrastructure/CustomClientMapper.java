@@ -2,6 +2,7 @@ package com.jtmc.apps.oasis.infrastructure;
 
 import com.jtmc.apps.oasis.domain.CustomClient;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
@@ -38,5 +39,9 @@ public interface CustomClientMapper extends EmpresaMapper {
     @ResultMap("CustomEmpresaResult")
     Optional<CustomClient> selectOneCustomClient(SelectStatementProvider selectStatement);
 
-
+    //todo: refactor this part. View should not be called as SP
+    @Select(value = "{ call View_Not_Order_In_30_days }")
+    @Options(statementType = StatementType.CALLABLE)
+    @ResultMap("CustomEmpresaResult")
+    List<CustomClient> selectViewNotOrderIn30Days();
 }

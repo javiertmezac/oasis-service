@@ -34,6 +34,8 @@ import com.jtmc.apps.oasis.api.v1.payments.PaymentApiImpl;
 import com.jtmc.apps.oasis.api.v1.prices.PriceApi;
 import com.jtmc.apps.oasis.api.v1.prices.PriceApiImpl;
 import com.jtmc.apps.oasis.api.v1.annotations.JwtUserClaim;
+import com.jtmc.apps.oasis.api.v1.reports.ReportApi;
+import com.jtmc.apps.oasis.api.v1.reports.ReportApiImpl;
 import com.jtmc.apps.oasis.infrastructure.guice.OasisMyBatisModule;
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.eclipse.jetty.server.Server;
@@ -69,6 +71,7 @@ public class Launcher {
             bind(BlockApi.class).to(BlockApiImpl.class);
             bind(PaymentApi.class).to(PaymentApiImpl.class);
             bind(PriceApi.class).to(PriceApiImpl.class);
+            bind(ReportApi.class).to(ReportApiImpl.class);
             bind(JwtUserClaim.class).asEagerSingleton();
 
 
@@ -110,7 +113,8 @@ public class Launcher {
                     injector.getInstance(NotesApiImpl.class),
                     injector.getInstance(BlockApiImpl.class),
                     injector.getInstance(PaymentApiImpl.class),
-                    injector.getInstance(PriceApiImpl.class)
+                    injector.getInstance(PriceApiImpl.class),
+                    injector.getInstance(ReportApiImpl.class)
             );
         }
     }
