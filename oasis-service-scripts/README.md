@@ -1,4 +1,10 @@
 
+### version 1.6.0
+ADDED REPORTS
+created SP to fetch clients that have not set and order within the las 30 days
+
+script: reports/not-order-in-30-days.sql
+
 ### version 1.5.0
 ADDED NEW TABLE "CLIENT CLEANING TANK RECORD" to track every time a 
 new date for next cleaning is assigned.
