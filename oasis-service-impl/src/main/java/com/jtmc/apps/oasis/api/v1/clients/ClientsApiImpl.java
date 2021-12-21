@@ -138,7 +138,6 @@ public class ClientsApiImpl implements ClientsApi {
         }
         System.out.printf("Empresa/Client #%s updated successfully.%n", clientRequest.getClientId());
 
-        //todo: if nextCleanDate != from DB, then create new record for nextClean
         int sameDateComparisonValue = 0;
         Instant oldCleaningTankDate = c.getSiglavado();
         if(oldCleaningTankDate != null && oldCleaningTankDate.truncatedTo(ChronoUnit.DAYS)
