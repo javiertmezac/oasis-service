@@ -73,6 +73,8 @@ public class ClientsApiImpl implements ClientsApi {
         checkArgument(clientRequest.getClientId() == newClient, "Invalid ClientId");
         checkArgument(clientRequest.getClientPriceId() > 0, "Invalid ClientPriceId");
 
+        System.out.printf("from request : reg date %s.%n", clientRequest.getClientInstantRegistration());
+        System.out.printf("from request : clean date %s.%n", clientRequest.getClientInstantNextClean());
 
         Empresa client = new Empresa();
         client.setId(null);
@@ -90,6 +92,10 @@ public class ClientsApiImpl implements ClientsApi {
         client.setIdprecio(clientRequest.getClientPriceId());
         client.setSiglavado(clientRequest.getClientInstantNextClean());
         client.setNextcleaningcomments(clientRequest.getNextCleaningComments());
+
+
+        System.out.printf("Before insert : reg date %s.%n", client.getFecharegistro());
+        System.out.printf("Before insert : clean date %s.%n", client.getSiglavado());
 
         if (clientApp.insertClient(client) != 1) {
             System.out.println("Could not insert new Client Record");
