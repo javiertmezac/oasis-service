@@ -1,20 +1,22 @@
 package com.jtmc.apps.oasis.application.clients;
 
 import com.google.inject.Inject;
+import com.jtmc.apps.oasis.api.v2.clients.ClientsApiImpl;
 import com.jtmc.apps.oasis.domain.CustomClient;
 import com.jtmc.apps.oasis.domain.Empresa;
 import com.jtmc.apps.oasis.infrastructure.CustomClientMapper;
 import com.jtmc.apps.oasis.infrastructure.EmpresaDynamicSqlSupport;
 import com.jtmc.apps.oasis.infrastructure.EmpresaMapper;
 import com.jtmc.apps.oasis.infrastructure.PreciogranelDynamicSqlSupport;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
+import org.mybatis.dynamic.sql.where.condition.IsLike;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -130,12 +132,44 @@ public class ClientAppImpl {
     }
 
     public long countActiveClients() {
+        return this.countActiveClients(null);
+    }
+
+    public long countActiveClients(String search) {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
-            return mapper.count(c -> c.where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
+            String sanitizedSearch = StringUtils.isBlank(search) ? "%%" : "%" + search + "%";
+
+            return mapper.count(c ->
+                    c.where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue())
+                    .and(EmpresaDynamicSqlSupport.nombre, IsLike.of(sanitizedSearch))
+            );
         }
     }
+
+    public List<CustomClient> findAll(ClientsApiImpl.Pageable pageable, String search) {
+        try(SqlSession session = sqlSessionFactory.openSession()) {
+            CustomClientMapper mapper = session.getMapper(CustomClientMapper.class);
+
+            String sanitizedSearch = StringUtils.isBlank(search) ? "%%" : "%" + search + "%";
+
+            SelectStatementProvider statementProvider = MyBatis3Utils
+                    .select(addBasicColumns(), EmpresaDynamicSqlSupport.empresa,
+                            c -> c.join(PreciogranelDynamicSqlSupport.preciogranel)
+                                    .on(EmpresaDynamicSqlSupport.idprecio, SqlBuilder.equalTo(PreciogranelDynamicSqlSupport.id))
+                                    .where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue())
+                                    .and(EmpresaDynamicSqlSupport.nombre, IsLike.of(sanitizedSearch))
+                                    .orderBy(SqlColumn.of(EmpresaDynamicSqlSupport.fecharegistro.name(), EmpresaDynamicSqlSupport.empresa).descending())
+                                    .offset((long) pageable.page * pageable.size)
+                                    .fetchFirst(pageable.size).rowsOnly()
+                    );
+
+            return mapper.selectManyCustomClient(statementProvider);
+        }
+    }
+
+    public int totalPages(long totalItems, int size) {
+        return (int) Math.ceil((double) totalItems / size);
+    }
+
 }

@@ -108,6 +108,7 @@ public class Launcher {
                     injector.getInstance(HealthcheckApiImpl.class),
                     injector.getInstance(LoginApiImpl.class),
                     injector.getInstance(ContactsApiImpl.class),
+                    injector.getInstance(com.jtmc.apps.oasis.api.v2.clients.ClientsApiImpl.class),
                     injector.getInstance(OrdersApiImpl.class),
                     injector.getInstance(EmployeeApiImpl.class),
                     injector.getInstance(NotesApiImpl.class),
