@@ -46,7 +46,7 @@ public class ClientsApiImpl implements ClientsApi {
     public ClientsResponseList getClients() {
 
         List<CustomClient> empresaList = clientApp.selectAllRows();
-        if(empresaList == null || empresaList.size() == 0) {
+        if(empresaList == null || empresaList.isEmpty()) {
             throw new WebApplicationException("Could not fetch EmpresaList", Response.Status.NOT_FOUND);
         }
 
