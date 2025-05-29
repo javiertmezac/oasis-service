@@ -41,6 +41,14 @@ public interface CustomNoteMapper extends NotaMapper {
     @ResultMap("CustomNotaResult")
     List<CustomNote> selectPaidNotesSP();
 
+    @Select("{ call PaidNotesListV2(#{offset_rows, mode=IN, jdbcType=INTEGER}, #{select_rows, mode=IN, jdbcType=INTEGER}, #{search, mode=IN, jdbcType=VARCHAR}) }")
+    @Options(statementType = StatementType.CALLABLE)
+    @ResultMap("CustomNotaResult")
+    List<CustomNote> selectPaidNotesSPV2(@Param("offset_rows") Integer offsetRows,
+                                         @Param("select_rows") Integer selectRows,
+                                         @Param("search") String search);
+
+
     @SelectProvider(type= SqlProviderAdapter.class, method="select")
     @Results(id="CustomOneNotaResult", value = {
             @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),

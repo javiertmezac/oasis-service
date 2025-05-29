@@ -68,6 +68,7 @@ public class Launcher {
             bind(OrdersApi.class).to(OrdersApiImpl.class);
             bind(EmployeeApi.class).to(EmployeeApiImpl.class);
             bind(NotesApi.class).to(NotesApiImpl.class);
+            bind(com.jtmc.apps.oasis.api.v2.notes.NotesApi.class).to(com.jtmc.apps.oasis.api.v2.notes.NotesApiImpl.class);
             bind(BlockApi.class).to(BlockApiImpl.class);
             bind(PaymentApi.class).to(PaymentApiImpl.class);
             bind(PriceApi.class).to(PriceApiImpl.class);
@@ -112,6 +113,7 @@ public class Launcher {
                     injector.getInstance(OrdersApiImpl.class),
                     injector.getInstance(EmployeeApiImpl.class),
                     injector.getInstance(NotesApiImpl.class),
+                    injector.getInstance(com.jtmc.apps.oasis.api.v2.notes.NotesApiImpl.class),
                     injector.getInstance(BlockApiImpl.class),
                     injector.getInstance(PaymentApiImpl.class),
                     injector.getInstance(PriceApiImpl.class),

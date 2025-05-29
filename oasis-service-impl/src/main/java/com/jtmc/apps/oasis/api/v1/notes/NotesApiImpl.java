@@ -2,13 +2,11 @@ package com.jtmc.apps.oasis.api.v1.notes;
 
 import com.google.inject.Inject;
 import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
-import com.jtmc.apps.oasis.api.v1.annotations.JwtUserClaim;
 import com.jtmc.apps.oasis.api.v1.payments.PaymentResponse;
 import com.jtmc.apps.oasis.application.abonos.AbonoAppImpl;
 import com.jtmc.apps.oasis.application.blockerror.BlockErrorAppImpl;
 import com.jtmc.apps.oasis.application.blocks.BlockAppImpl;
 import com.jtmc.apps.oasis.application.employees.EmployeesAppImpl;
-import com.jtmc.apps.oasis.application.exceptions.UserNotAdminException;
 import com.jtmc.apps.oasis.application.notes.NotesAppImpl;
 import com.jtmc.apps.oasis.application.users.UserAppImpl;
 import com.jtmc.apps.oasis.domain.*;
@@ -16,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;

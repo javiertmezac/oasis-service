@@ -1,8 +1,9 @@
 package com.jtmc.apps.oasis.api.v2.clients;
 
-import com.jtmc.apps.oasis.api.v1.clients.ClientsResponseList;
-
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 @Path("/v2/clients")

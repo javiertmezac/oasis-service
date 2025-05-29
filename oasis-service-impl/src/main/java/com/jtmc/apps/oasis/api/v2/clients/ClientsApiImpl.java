@@ -4,11 +4,10 @@ import com.google.inject.Inject;
 import com.jtmc.apps.oasis.api.v1.annotations.JWTRequired;
 import com.jtmc.apps.oasis.api.v1.clients.ClientsResponse;
 import com.jtmc.apps.oasis.api.v1.clients.CustomClientsResponseConverter;
+import com.jtmc.apps.oasis.api.v2.Pageable;
 import com.jtmc.apps.oasis.api.v2.Pagination;
 import com.jtmc.apps.oasis.application.clients.ClientAppImpl;
 import com.jtmc.apps.oasis.domain.CustomClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,17 +39,4 @@ public class ClientsApiImpl implements ClientsApi {
         return r;
     }
 
-    public class Pageable {
-        public int page;
-        public int size;
-        public String sortBy;
-        public String sortOrder;
-
-        public Pageable(int page, int size, String sortBy, String sortOrder) {
-            this.page = page;
-            this.size = size;
-            this.sortBy = sortBy;
-            this.sortOrder = sortOrder;
-        }
-    }
 }

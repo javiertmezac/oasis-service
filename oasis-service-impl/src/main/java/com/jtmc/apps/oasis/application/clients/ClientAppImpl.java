@@ -1,6 +1,7 @@
 package com.jtmc.apps.oasis.application.clients;
 
 import com.google.inject.Inject;
+import com.jtmc.apps.oasis.api.v2.Pageable;
 import com.jtmc.apps.oasis.api.v2.clients.ClientsApiImpl;
 import com.jtmc.apps.oasis.domain.CustomClient;
 import com.jtmc.apps.oasis.domain.Empresa;
@@ -154,7 +155,7 @@ public class ClientAppImpl {
         }
     }
 
-    public List<CustomClient> findAll(ClientsApiImpl.Pageable pageable, String search) {
+    public List<CustomClient> findAll(Pageable pageable, String search) {
         try(SqlSession session = sqlSessionFactory.openSession()) {
             CustomClientMapper mapper = session.getMapper(CustomClientMapper.class);
 
@@ -171,7 +172,7 @@ public class ClientAppImpl {
                                             SqlBuilder.or(EmpresaDynamicSqlSupport.colonia, IsLike.of(sanitizedSearch))
                                     )
                                     .orderBy(SqlColumn.of(EmpresaDynamicSqlSupport.fecharegistro.name(), EmpresaDynamicSqlSupport.empresa).descending())
-                                    .offset((long) pageable.page * pageable.size)
+                                    .offset(pageable.getOffset())
                                     .fetchFirst(pageable.size).rowsOnly()
                     );
 
