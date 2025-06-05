@@ -1,4 +1,4 @@
-### version 1.7.0
+### version 1.7.0-0
 ADDED new SP PaidNotesListV2 and CountAllPaidNotesWithSearch
 This SP performs a like operation on 'clientName', 'orderId (idPedido)', 'note(noNota)'
 it also includes offset and fetch_first rows (pagination)

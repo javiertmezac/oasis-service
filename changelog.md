@@ -1,4 +1,10 @@
 # Oasis Service (v2)
+
+## 1.7.0-0
+Release Date: Jun 5, 2025
+
+Most of the changes [here](oasis-service-scripts/README.md) for version 1.7.0-0
+
 ## 1.2.0
 Release Date: - Nov 26, 2021
 ### Features
