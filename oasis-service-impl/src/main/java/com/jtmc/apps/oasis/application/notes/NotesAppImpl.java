@@ -1,14 +1,20 @@
 package com.jtmc.apps.oasis.application.notes;
 
 import com.google.inject.Inject;
+import com.jtmc.apps.oasis.api.v2.Pageable;
 import com.jtmc.apps.oasis.domain.CustomNote;
 import com.jtmc.apps.oasis.domain.Nota;
-import com.jtmc.apps.oasis.infrastructure.CustomNoteMapper;
-import com.jtmc.apps.oasis.infrastructure.NotaDynamicSqlSupport;
-import com.jtmc.apps.oasis.infrastructure.NotaMapper;
+import com.jtmc.apps.oasis.infrastructure.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.select.CountDSLCompleter;
+import org.mybatis.dynamic.sql.select.join.EqualTo;
+import org.mybatis.dynamic.sql.select.join.JoinCriterion;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
+import org.mybatis.dynamic.sql.where.condition.IsLike;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,23 +25,29 @@ public class NotesAppImpl {
     private SqlSessionFactory sqlSessionFactory;
 
     public List<CustomNote> selectAllRecords() {
-       try(SqlSession session = sqlSessionFactory.openSession()) {
-           CustomNoteMapper mapper = session.getMapper(CustomNoteMapper.class);
-           return mapper.selectManyCustomNotes();
-       } catch (Exception e) {
-           e.printStackTrace();
-           throw new RuntimeException("Error while fetching Notes");
-       }
-    }
-
-    public List<CustomNote> selectPaidNotes() {
         try(SqlSession session = sqlSessionFactory.openSession()) {
             CustomNoteMapper mapper = session.getMapper(CustomNoteMapper.class);
-            return mapper.selectPaidNotesSP();
+            return mapper.selectManyCustomNotes();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error while fetching Notes");
+        }
+    }
+
+    public List<CustomNote> selectPaidNotes(boolean paginatedVersion, Pageable pageable,  String search) {
+        try(SqlSession session = sqlSessionFactory.openSession()) {
+            CustomNoteMapper mapper = session.getMapper(CustomNoteMapper.class);
+
+            String sanitizedSearch = StringUtils.isBlank(search) ? "" : search;
+            return paginatedVersion ? mapper.selectPaidNotesSPV2(pageable.getOffset(), pageable.size, sanitizedSearch) : mapper.selectPaidNotesSP();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error while fetching PaidNotes");
         }
+    }
+
+    public List<CustomNote> selectPaidNotes() {
+        return this.selectPaidNotes(false, null, null);
     }
 
     public Optional<CustomNote> selectOneNote(int noteId) {
@@ -87,5 +99,16 @@ public class NotesAppImpl {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    public long countAllPaidNotes(String search) {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CustomNoteMapper mapper = session.getMapper(CustomNoteMapper.class);
+            return mapper.countAllPaidNotes(search);
+        }
+    }
+
+    public int totalPages(long totalItems, int size) {
+        return (int) Math.ceil((double) totalItems / size);
     }
 }

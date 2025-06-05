@@ -28,3 +28,4 @@ hs_err_pid*
 *.versionsBackup
 target/
 oasis-db/
+*.DS_Store

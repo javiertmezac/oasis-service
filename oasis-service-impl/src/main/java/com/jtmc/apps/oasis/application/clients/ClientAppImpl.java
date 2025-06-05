@@ -1,20 +1,24 @@
 package com.jtmc.apps.oasis.application.clients;
 
 import com.google.inject.Inject;
+import com.jtmc.apps.oasis.api.v2.Pageable;
+import com.jtmc.apps.oasis.api.v2.clients.ClientsApiImpl;
 import com.jtmc.apps.oasis.domain.CustomClient;
 import com.jtmc.apps.oasis.domain.Empresa;
 import com.jtmc.apps.oasis.infrastructure.CustomClientMapper;
 import com.jtmc.apps.oasis.infrastructure.EmpresaDynamicSqlSupport;
 import com.jtmc.apps.oasis.infrastructure.EmpresaMapper;
 import com.jtmc.apps.oasis.infrastructure.PreciogranelDynamicSqlSupport;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.ExistsPredicate;
-import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.*;
+import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
+import org.mybatis.dynamic.sql.where.condition.IsLike;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -24,6 +28,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class ClientAppImpl {
+
+    private final Logger logger = LoggerFactory.getLogger(ClientsApiImpl.class);
 
     @Inject
     private SqlSessionFactory sqlSessionFactory;
@@ -35,12 +41,12 @@ public class ClientAppImpl {
      * @throws WebApplicationException when CustomClient is not Present
      */
     public CustomClient validateCustomClientExists(int clientId) {
-       Optional<CustomClient> client = this.selectOne(clientId);
-       if (!client.isPresent()) {
-           System.out.printf("Client #%d Not Found", clientId);
-           throw new WebApplicationException("Not Found", Response.Status.NOT_FOUND);
-       }
-       return  client.get();
+        Optional<CustomClient> client = this.selectOne(clientId);
+        if (!client.isPresent()) {
+            logger.info("Client Not Found, {}", clientId);
+            throw new WebApplicationException("Not Found", Response.Status.NOT_FOUND);
+        }
+        return  client.get();
     }
 
     public List<CustomClient> selectAllRows() {
@@ -84,7 +90,7 @@ public class ClientAppImpl {
             client.setStatus(true);
             return mapper.insertSelective(client);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("", ex);
             throw ex;
         }
     }
@@ -94,7 +100,7 @@ public class ClientAppImpl {
             EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
             return mapper.updateByPrimaryKeySelective(client);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("", ex);
             throw ex;
         }
     }
@@ -105,7 +111,7 @@ public class ClientAppImpl {
             client.setStatus(false);
             return mapper.updateByPrimaryKeySelective(client);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("", ex);
             throw ex;
         }
     }
@@ -114,7 +120,7 @@ public class ClientAppImpl {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
             return mapper.select(c -> c.where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue())
-                            .and(EmpresaDynamicSqlSupport.idprecio, SqlBuilder.isEqualTo(priceId))
+                    .and(EmpresaDynamicSqlSupport.idprecio, SqlBuilder.isEqualTo(priceId))
             );
         }
     }
@@ -124,18 +130,58 @@ public class ClientAppImpl {
             CustomClientMapper mapper = session.getMapper(CustomClientMapper.class);
             return mapper.selectViewNotOrderIn30Days();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("", ex);
             throw ex;
         }
     }
 
     public long countActiveClients() {
+        return this.countActiveClients(null);
+    }
+
+    public long countActiveClients(String search) {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             EmpresaMapper mapper = session.getMapper(EmpresaMapper.class);
-            return mapper.count(c -> c.where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
+            String sanitizedSearch = StringUtils.isBlank(search) ? "%%" : "%" + search + "%";
+
+            CountDSLCompleter completer = c -> c.where( EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue())
+                    .and(
+                            EmpresaDynamicSqlSupport.nombre, IsLike.of(sanitizedSearch),
+                            SqlBuilder.or(EmpresaDynamicSqlSupport.calle, IsLike.of(sanitizedSearch)),
+                            SqlBuilder.or(EmpresaDynamicSqlSupport.colonia, IsLike.of(sanitizedSearch))
+                    );
+            SelectStatementProvider statement = MyBatis3Utils.countFrom(EmpresaDynamicSqlSupport.empresa, completer);
+            return mapper.count(statement);
         }
     }
+
+    public List<CustomClient> findAll(Pageable pageable, String search) {
+        try(SqlSession session = sqlSessionFactory.openSession()) {
+            CustomClientMapper mapper = session.getMapper(CustomClientMapper.class);
+
+            String sanitizedSearch = StringUtils.isBlank(search) ? "%%" : "%" + search + "%";
+
+            SelectStatementProvider statementProvider = MyBatis3Utils
+                    .select(addBasicColumns(), EmpresaDynamicSqlSupport.empresa,
+                            c -> c.join(PreciogranelDynamicSqlSupport.preciogranel)
+                                    .on(EmpresaDynamicSqlSupport.idprecio, SqlBuilder.equalTo(PreciogranelDynamicSqlSupport.id))
+                                    .where(EmpresaDynamicSqlSupport.status, SqlBuilder.isTrue())
+                                    .and(
+                                            EmpresaDynamicSqlSupport.nombre, IsLike.of(sanitizedSearch),
+                                            SqlBuilder.or(EmpresaDynamicSqlSupport.calle, IsLike.of(sanitizedSearch)),
+                                            SqlBuilder.or(EmpresaDynamicSqlSupport.colonia, IsLike.of(sanitizedSearch))
+                                    )
+                                    .orderBy(SqlColumn.of(EmpresaDynamicSqlSupport.fecharegistro.name(), EmpresaDynamicSqlSupport.empresa).descending())
+                                    .offset(pageable.getOffset())
+                                    .fetchFirst(pageable.size).rowsOnly()
+                    );
+
+            return mapper.selectManyCustomClient(statementProvider);
+        }
+    }
+
+    public int totalPages(long totalItems, int size) {
+        return (int) Math.ceil((double) totalItems / size);
+    }
+
 }

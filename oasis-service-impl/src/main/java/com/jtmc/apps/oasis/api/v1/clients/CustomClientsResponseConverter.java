@@ -1,9 +1,6 @@
 package com.jtmc.apps.oasis.api.v1.clients;
 
 import com.jtmc.apps.oasis.domain.CustomClient;
-import com.jtmc.apps.oasis.domain.Empresa;
-import com.jtmc.apps.oasis.infrastructure.CustomClientMapper;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.function.Function;

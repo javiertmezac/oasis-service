@@ -1,3 +1,11 @@
+### version 1.7.0-0
+ADDED new SP PaidNotesListV2 and CountAllPaidNotesWithSearch
+This SP performs a like operation on 'clientName', 'orderId (idPedido)', 'note(noNota)'
+it also includes offset and fetch_first rows (pagination)
+
+script:
+- [PaidNotesListV2](./stored-procedures/PaidNotesListV2.sql)
+- [CountAllPaidNotesWithSearch](./stored-procedures/CountAllPaidNotesWithSearch.sql)
 
 ### version 1.6.0
 ADDED REPORTS
@@ -24,7 +32,7 @@ This SP is going to list all the notes that are already paid.
 There is something particular in the way the having in this statement works, that it cannot be done 
 through Mybatis DynamisSql.
 
-take a look at the ./stored-procedures/PaidNotesLis.sql
+take a look at the [PaidNotesLis](./stored-procedures/PaidNotesLis.sql)
 
 ### version 1.3.2
 UPDATED BLOQUE
