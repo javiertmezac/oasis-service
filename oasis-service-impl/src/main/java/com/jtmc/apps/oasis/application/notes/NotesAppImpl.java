@@ -101,27 +101,10 @@ public class NotesAppImpl {
         }
     }
 
-    public long countActive(String search) {
+    public long countAllPaidNotes(String search) {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            NotaMapper mapper = session.getMapper(NotaMapper.class);
-            String sanitizedSearch = StringUtils.isBlank(search) ? "%%" : "%" + search + "%";
-
-            JoinCriterion.Builder pedidoBuilder = new JoinCriterion.Builder();
-            pedidoBuilder.withConnector("on").withJoinColumn(NotaDynamicSqlSupport.idpedido).withJoinCondition(new EqualTo(PedidoDynamicSqlSupport.id));
-
-            JoinCriterion.Builder empresaBuilder = new JoinCriterion.Builder();
-            empresaBuilder.withConnector("on").withJoinColumn(PedidoDynamicSqlSupport.idempresa).withJoinCondition(new EqualTo(EmpresaDynamicSqlSupport.id));
-
-            CountDSLCompleter completer = c ->
-                    c.leftJoin(PedidoDynamicSqlSupport.pedido, pedidoBuilder.build())
-                            .leftJoin(EmpresaDynamicSqlSupport.empresa, empresaBuilder.build())
-                            .where( NotaDynamicSqlSupport.status, SqlBuilder.isTrue())
-                            .and(
-                                    EmpresaDynamicSqlSupport.nombre, IsLike.of(sanitizedSearch),
-                                    SqlBuilder.or(NotaDynamicSqlSupport.nonota, IsLike.of(sanitizedSearch))
-                            );
-            SelectStatementProvider statement = MyBatis3Utils.countFrom(NotaDynamicSqlSupport.nota, completer);
-            return mapper.count(statement);
+            CustomNoteMapper mapper = session.getMapper(CustomNoteMapper.class);
+            return mapper.countAllPaidNotes(search);
         }
     }
 

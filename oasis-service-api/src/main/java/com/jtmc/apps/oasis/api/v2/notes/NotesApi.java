@@ -9,7 +9,7 @@ public interface NotesApi {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    PaginatedNotesResponse getNotes(@QueryParam("selectPaidNotes") @DefaultValue("false") boolean selectPaidNotes,
+    PaginatedNotesResponse getNotes(@QueryParam("selectPaidNotes") boolean selectPaidNotes,
                                     @QueryParam("page") int page,
                                     @QueryParam("size") int size,
                                     @QueryParam("search") String search);

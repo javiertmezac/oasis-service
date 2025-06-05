@@ -33,7 +33,7 @@ public class NotesApiImpl implements NotesApi {
         if (selectPaidNotes) {
             Pageable p = new Pageable(page,size);
             noteList = repository.selectPaidNotes(true, p, search);
-            totalItems = repository.countActive(search);
+            totalItems = repository.countAllPaidNotes(search);
         } else {
             noteList = repository.selectAllRecords();
             totalItems = noteList.size();

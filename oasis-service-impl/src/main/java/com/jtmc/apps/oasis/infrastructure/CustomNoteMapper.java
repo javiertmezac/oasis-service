@@ -48,6 +48,9 @@ public interface CustomNoteMapper extends NotaMapper {
                                          @Param("select_rows") Integer selectRows,
                                          @Param("search") String search);
 
+    @Select("{ call CountAllPaidNotesWithSearch(#{search, mode=IN, jdbcType=VARCHAR}) }")
+    @Options(statementType = StatementType.CALLABLE)
+    long countAllPaidNotes(@Param("search") String search);
 
     @SelectProvider(type= SqlProviderAdapter.class, method="select")
     @Results(id="CustomOneNotaResult", value = {
